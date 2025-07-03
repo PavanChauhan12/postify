@@ -8,6 +8,7 @@ const userSchema = new Schema({
   phoneNo: { type: String, required: true },
   dob: { type: Date, required: true },
   password: { type: String, required: true },
+  isVerified: {type: Boolean, default: true },
   q1: { type: String, required: true },
   q2: { type: String, required: true },
   q3: { type: String, required: true },
