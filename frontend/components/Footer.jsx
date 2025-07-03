@@ -10,7 +10,7 @@ export default function Footer() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-4 gap-8 text-center md:text-left">
         <PinnedCard className="col-span-1 md:col-span-2 flex flex-col items-center md:items-start">
           <Link to="/" className="mb-4">
-            <h1 className="text-4xl font-dancing font-bold text-black">postify</h1>
+            <h1 className="text-4xl font-dancing font-bold text-black text-center">postify</h1>
           </Link>
           <p className="text-sm text-gray-600 leading-relaxed max-w-xs">
             Your favorite choice for creating, sharing, and discovering amazing blog content.
