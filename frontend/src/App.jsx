@@ -2,8 +2,8 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-d
 import HomePage from "./web/page"
 import SignUp from "../components/SignUp"
 import SignIn from "../components/SignIn"
-import Dashboard from "../components/Dashboard"
-import CreateBlog from "../components/CreateBlog"
+import Dashboard from "@/components/DashBoard"
+import CreateBlog from "@/components/CreateBlog"
 import WriteContent from "@/components/WriteContent"
 import BlogsPage from "@/components/BlogsPage"
 function App() {
