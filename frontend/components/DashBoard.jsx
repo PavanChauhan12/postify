@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 
 import { PenTool, Eye, Heart, MessageCircle, Plus, Edit3, Trash2, BookOpen } from "lucide-react"
-import Navbar from "./NavBar"
+
 import BlogFolderCard from "@/components/BlogFolderCard"
 
 export default function Dashboard() {
@@ -63,8 +63,8 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-[#f5f1eb] w-screen py-24 overflow-hidden">
-      <Navbar />
+    <div className="min-h-screen bg-[#f5f1eb] w-screen py-12 overflow-hidden">
+
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
