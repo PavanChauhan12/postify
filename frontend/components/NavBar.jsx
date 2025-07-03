@@ -24,9 +24,11 @@ export default function Navbar() {
   return (
     <nav className="fixed top-6 left-1/2 -translate-x-1/2 z-50 px-6 py-2 w-fit max-w-full border border-[#e0d9cf] rounded-full bg-[#f5f1eb]/95 backdrop-blur-md shadow-md flex items-center space-x-4 font-serif text-sm">
       {/* Logo */}
-      <Link to="/" className="text-xl font-dancing text-[#2f2f2f]">
-        postify
-      </Link>
+     <h1 className="!text-xl font-dancing ">
+  <Link to="/" className="!text-black hover:!text-black">
+    postify
+  </Link>
+</h1>
 
       {/* Desktop Navigation */}
       <div className="hidden md:flex items-center gap-3">
@@ -38,8 +40,8 @@ export default function Navbar() {
               to={href}
               className={`flex items-center gap-2 px-3 py-1.5 rounded-full transition-colors ${
                 isActive
-                  ? "bg-[#f8dbe0] text-[#2f2f2f] font-semibold"
-                  : "text-[#2f2f2f] hover:bg-[#eae4da]"
+                  ? "bg-[#f8dbe0] !text-black hover:!text-black font-semibold"
+                  : "!text-black hover:!text-black hover:bg-[#eae4da]"
               }`}
             >
               <Icon className="w-4 h-4" />
@@ -76,23 +78,15 @@ export default function Navbar() {
         ) : (
           <>
             <Link to="/signin">
-  <Button
-    size="sm"
-    
-    variant="default"
-  >
-    Sign In
-  </Button>
-</Link>
-<Link to="/signup">
-  <Button
-    size="sm"
-    
-    variant="default"
-  >
-    Sign Up
-  </Button>
-</Link>
+              <Button size="sm" variant="default">
+                Sign In
+              </Button>
+            </Link>
+            <Link to="/signup">
+              <Button size="sm" variant="default">
+                Sign Up
+              </Button>
+            </Link>
           </>
         )}
       </div>
@@ -114,8 +108,8 @@ export default function Navbar() {
               onClick={() => setIsMenuOpen(false)}
               className={`flex items-center gap-2 px-4 py-2 rounded-md ${
                 location.pathname === href
-                  ? "bg-[#f8dbe0] text-[#2f2f2f] font-semibold"
-                  : "text-[#2f2f2f] hover:bg-[#eae4da]"
+                  ? "bg-[#f8dbe0] text-black font-semibold"
+                  : "text-black hover:bg-[#eae4da] hover:text-black"
               }`}
             >
               <Icon className="w-5 h-5" />

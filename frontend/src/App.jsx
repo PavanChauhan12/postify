@@ -5,12 +5,13 @@ import SignIn from "../components/SignIn"
 import Dashboard from "../components/Dashboard"
 import CreateBlog from "../components/CreateBlog"
 import WriteContent from "@/components/WriteContent"
+import BlogsPage from "@/components/BlogsPage"
 function App() {
   return (
     <>
       <Router>
         <Routes>
-         
+         <Route path="/blogs" element={<BlogsPage/>} />
           <Route path="/" element={<HomePage />} />
           <Route path="/signup" element={<SignUp />} />
           <Route path="/signin" element={<SignIn />} />

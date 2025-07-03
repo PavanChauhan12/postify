@@ -5,10 +5,10 @@ export default function Hero() {
     <section className="relative min-h-screen overflow-visible grid-bg flex items-center justify-center">
       {/* Center Text */}
       <div className="flex flex-col items-center justify-center text-center relative z-30 px-4">
-        <h1 className="text-[50px] font-black font-dancing text-black leading-none">
+        <h1 className="!text-9xl font-black font-dancing text-black leading-none m-10">
           postify
         </h1>
-        <p className="text-sm tracking-[0.4em] uppercase font-medium text-gray-600 mb-4">
+        <p className="text-sm tracking-[0.4em] uppercase font-bold text-gray-600 mb-4">
           a blogger's favourite choice
         </p>
         <button className="mt-4 px-6 py-2 border border-black text-xs font-semibold uppercase tracking-widest hover:bg-black text-white transition-all">
