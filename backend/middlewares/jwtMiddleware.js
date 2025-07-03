@@ -14,7 +14,7 @@ async function verifyAccessToken(req, res, next) {
     if (!user.isVerified) {
       return res.status(403).json({ error: "User is not verified. Please verify your account." });
     }
-    req.user = decoded;
+    req.user = user;
     next();
   } catch (error) {
     res.status(401).json({ message: "Invalid token." });
