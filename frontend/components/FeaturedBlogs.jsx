@@ -77,7 +77,7 @@ const featuredBlogs = [
 
 export default function FeaturedBlogsFolderStyle() {
   return (
-    <section className="py-20 bg-[#f5f2ec] h-screen">
+    <section className="py-20 bg-[#f5f2ec] ">
       <div className="max-w-7xl mx-auto ">
         <div className="text-center mb-10">
           <h2 className="text-7xl font-dancing font-bold text-black mb-2">

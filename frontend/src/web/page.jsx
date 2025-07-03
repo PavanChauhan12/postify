@@ -7,7 +7,7 @@ import Footer from "@/components/Footer"
 
 export default function HomePage() {
   return (
-    <div className=" bg-[#f5f1eb]">
+    <div className="bg-[#f5f1eb] overflow-hidden">
       <Navbar />
       <Hero />
       {/* <ModelCard /> */}
