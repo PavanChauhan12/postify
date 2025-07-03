@@ -13,38 +13,37 @@ export default function Navbar() {
 
   const handleLogout = () => {
     setUser(null)
-    navigate("/home")
+    navigate("/")
   }
 
   const navLinks = [
-    { name: "Home", href: "/home", icon: Home },
+    { name: "Home", href: "/", icon: Home },
     { name: "Blogs", href: "/blogs", icon: PenTool },
   ]
 
   return (
-    <nav className="fixed top-6 left-1/2 -translate-x-1/2 bg-[#f5f1eb]/95 backdrop-blur-md rounded-full border border-[#e0d9cf] px-6 py-2 shadow-md flex items-center space-x-4 z-50 w-auto max-w-full">
+    <nav className="fixed top-6 left-1/2 -translate-x-1/2 z-50 px-6 py-2 w-fit max-w-full border border-[#e0d9cf] rounded-full bg-[#f5f1eb]/95 backdrop-blur-md shadow-md flex items-center space-x-4 font-serif text-sm">
       {/* Logo */}
-      <Link to="/home" className="text-lg md:text-xl font-dancing font-bold text-black">
+      <Link to="/" className="text-xl font-dancing text-[#2f2f2f]">
         postify
       </Link>
 
-      {/* Desktop Links */}
+      {/* Desktop Navigation */}
       <div className="hidden md:flex items-center gap-3">
-        {navLinks.map((link) => {
-          const Icon = link.icon
-          const active = location.pathname === link.href
+        {navLinks.map(({ name, href, icon: Icon }) => {
+          const isActive = location.pathname === href
           return (
             <Link
-              key={link.name}
-              to={link.href}
-              className={`flex items-center gap-1 px-3 py-1 rounded-full text-sm transition ${
-                active
-                  ? "bg-black text-white"
-                  : "text-gray-700 hover:bg-[#e0d9cf] hover:text-black"
+              key={name}
+              to={href}
+              className={`flex items-center gap-2 px-3 py-1.5 rounded-full transition-colors ${
+                isActive
+                  ? "bg-[#f8dbe0] text-[#2f2f2f] font-semibold"
+                  : "text-[#2f2f2f] hover:bg-[#eae4da]"
               }`}
             >
-              <Icon className="w-5 h-5" />
-              <span>{link.name}</span>
+              <Icon className="w-4 h-4" />
+              {name}
             </Link>
           )
         })}
@@ -55,12 +54,21 @@ export default function Navbar() {
         {user ? (
           <>
             <Link to="/dashboard">
-              <Button variant="outline" size="sm" className="text-black border-black hover:bg-black hover:text-white">
+              <Button
+                variant="outline"
+                size="sm"
+                className="text-[#2f2f2f] border-[#2f2f2f] bg-white hover:bg-[#2f2f2f] hover:text-white font-medium"
+              >
                 <User className="w-4 h-4 mr-1" />
                 Dashboard
               </Button>
             </Link>
-            <Button variant="ghost" size="sm" onClick={handleLogout} className="text-gray-600 hover:text-black">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={handleLogout}
+              className="text-gray-600 hover:text-[#2f2f2f]"
+            >
               <LogOut className="w-4 h-4 mr-1" />
               Logout
             </Button>
@@ -68,15 +76,23 @@ export default function Navbar() {
         ) : (
           <>
             <Link to="/signin">
-              <Button variant="ghost" size="sm" className="text-gray-600 hover:text-black">
-                Sign In
-              </Button>
-            </Link>
-            <Link to="/signup">
-              <Button size="sm" className="bg-black text-white hover:bg-gray-800">
-                Sign Up
-              </Button>
-            </Link>
+  <Button
+    size="sm"
+    
+    variant="default"
+  >
+    Sign In
+  </Button>
+</Link>
+<Link to="/signup">
+  <Button
+    size="sm"
+    
+    variant="default"
+  >
+    Sign Up
+  </Button>
+</Link>
           </>
         )}
       </div>
@@ -88,38 +104,60 @@ export default function Navbar() {
         </Button>
       </div>
 
-      {/* Mobile Menu */}
+      {/* Mobile Dropdown */}
       {isMenuOpen && (
-        <div className="absolute top-full mt-2 left-1/2 -translate-x-1/2 bg-[#f5f1eb]/95 rounded-lg shadow-lg p-4 border border-[#e0d9cf] w-64 z-50 flex flex-col space-y-3">
-          {navLinks.map((link) => (
+        <div className="absolute top-full mt-2 left-1/2 -translate-x-1/2 bg-[#f5f1eb]/95 rounded-xl shadow-lg p-4 border border-[#e0d9cf] w-64 z-50 flex flex-col space-y-3 text-sm font-serif">
+          {navLinks.map(({ name, href, icon: Icon }) => (
             <Link
-              key={link.name}
-              to={link.href}
+              key={name}
+              to={href}
               onClick={() => setIsMenuOpen(false)}
-              className="flex items-center gap-2 px-4 py-2 rounded-md text-gray-700 hover:bg-[#e0d9cf]"
+              className={`flex items-center gap-2 px-4 py-2 rounded-md ${
+                location.pathname === href
+                  ? "bg-[#f8dbe0] text-[#2f2f2f] font-semibold"
+                  : "text-[#2f2f2f] hover:bg-[#eae4da]"
+              }`}
             >
-              <link.icon className="w-5 h-5" />
-              {link.name}
+              <Icon className="w-5 h-5" />
+              {name}
             </Link>
           ))}
 
           {user ? (
             <>
-              <Link to="/dashboard" onClick={() => setIsMenuOpen(false)} className="px-4 py-2 text-gray-700 hover:bg-[#e0d9cf] rounded-md flex items-center gap-2">
+              <Link
+                to="/dashboard"
+                onClick={() => setIsMenuOpen(false)}
+                className="flex items-center gap-2 px-4 py-2 text-[#2f2f2f] hover:bg-[#eae4da] rounded-md"
+              >
                 <User className="w-5 h-5" />
                 Dashboard
               </Link>
-              <button onClick={() => { handleLogout(); setIsMenuOpen(false) }} className="px-4 py-2 text-gray-700 hover:bg-[#e0d9cf] rounded-md flex items-center gap-2">
+              <button
+                onClick={() => {
+                  handleLogout()
+                  setIsMenuOpen(false)
+                }}
+                className="flex items-center gap-2 px-4 py-2 text-[#2f2f2f] hover:bg-[#eae4da] rounded-md"
+              >
                 <LogOut className="w-5 h-5" />
                 Logout
               </button>
             </>
           ) : (
             <>
-              <Link to="/signin" onClick={() => setIsMenuOpen(false)} className="px-4 py-2 text-gray-700 hover:bg-[#e0d9cf] rounded-md text-center">
+              <Link
+                to="/signin"
+                onClick={() => setIsMenuOpen(false)}
+                className="px-4 py-2 bg-[#bdddef] text-[#2f2f2f] hover:bg-[#a9d3eb] rounded-md text-center font-medium"
+              >
                 Sign In
               </Link>
-              <Link to="/signup" onClick={() => setIsMenuOpen(false)} className="px-4 py-2 bg-black text-white hover:bg-gray-800 rounded-md text-center">
+              <Link
+                to="/signup"
+                onClick={() => setIsMenuOpen(false)}
+                className="px-4 py-2 bg-[#f2cbd3] text-[#2f2f2f] hover:bg-[#e8b9c2] rounded-md text-center font-medium"
+              >
                 Sign Up
               </Link>
             </>

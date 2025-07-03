@@ -2,20 +2,21 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-d
 import HomePage from "./web/page"
 import SignUp from "../components/SignUp"
 import SignIn from "../components/SignIn"
-// import Dashboard from "../components/Dashboard"
-// import CreateBlog from "../components/CreateBlog"
-
+import Dashboard from "../components/Dashboard"
+import CreateBlog from "../components/CreateBlog"
+import WriteContent from "@/components/WriteContent"
 function App() {
   return (
     <>
       <Router>
         <Routes>
-          <Route path="/" element={<Navigate to="/home" replace />} />
-          <Route path="/home" element={<HomePage />} />
+         
+          <Route path="/" element={<HomePage />} />
           <Route path="/signup" element={<SignUp />} />
           <Route path="/signin" element={<SignIn />} />
-          {/* <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/create-blog" element={<CreateBlog />} /> */}
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/create" element={<CreateBlog />} />
+<Route path="/create/content" element={<WriteContent/>} />
         </Routes>
       </Router>
     </>

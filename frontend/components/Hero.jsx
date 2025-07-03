@@ -62,16 +62,16 @@ export default function Hero() {
 
       {/* Sparkles & Dots */}
       <div className="absolute top-[25%] left-[25%] z-20">
-        <Sparkles className="text-pink-300 w-8 h-8" />
+        <Sparkles className="text-pink-300 w-16 h-16" />
       </div>
       <div className="absolute top-[25%] right-[25%] z-20">
-        <Sparkles className="text-blue-300 w-8 h-8" />
+        <Sparkles className="text-blue-300 w-16 h-16" />
       </div>
       <div className="absolute bottom-[25%] left-[25%] z-20">
-        <div className="w-3 h-3 bg-pink-300 rounded-full" />
+        <div className="w-8 h-8 bg-pink-300 rounded-full" />
       </div>
       <div className="absolute bottom-[25%] right-[25%] z-20">
-        <div className="w-3 h-3 bg-blue-300 rounded-full" />
+        <div className="w-8 h-8 bg-blue-300 rounded-full" />
       </div>
 
       {/* Speech Icons */}
