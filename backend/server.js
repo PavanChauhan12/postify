@@ -15,6 +15,7 @@ app.use(express.json());
 app.use(cors());
 
 app.use('/auth', authRoute);
+app.use('/blogs', require('./routes/blog_router'));
 
 app.listen(3000, () => {
   console.log("Server started at port: 3000");
