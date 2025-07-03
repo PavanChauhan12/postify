@@ -5,7 +5,7 @@ export default function Hero() {
     <section className="relative min-h-screen overflow-visible grid-bg flex items-center justify-center">
       {/* Center Text */}
       <div className="flex flex-col items-center justify-center text-center relative z-30 px-4">
-        <h1 className="text-[30rem] font-black font-serif text-black leading-none">
+        <h1 className="text-[50px] font-black font-dancing text-black leading-none">
           postify
         </h1>
         <p className="text-sm tracking-[0.4em] uppercase font-medium text-gray-600 mb-4">
