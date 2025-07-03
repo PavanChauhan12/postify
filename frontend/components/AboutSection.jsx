@@ -4,7 +4,7 @@ import { Instagram, Twitter, Mail } from "lucide-react"
 
 export default function AboutSection() {
   return (
-    <section className="py-16 bg-white">
+    <section className="py-16 bg-white h-screen">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           {/* Left Content */}

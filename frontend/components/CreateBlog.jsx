@@ -1,33 +1,28 @@
-"use client";
+"use client"
 
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { ArrowLeft } from "lucide-react";
-import BlogFolderCard from "@/components/BlogFolderCard";
+import { useState } from "react"
+import { useNavigate } from "react-router-dom"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
+import { ArrowLeft } from "lucide-react"
+import BlogFolderCard from "@/components/BlogFolderCard"
+import { Textarea } from "@/components/ui/textarea" // Ensure Textarea is imported
 
 export default function CreateBlog() {
-  const navigate = useNavigate();
+  const navigate = useNavigate()
   const [blogData, setBlogData] = useState({
     title: "",
     excerpt: "",
-    content: "",
+    content: "", // content is still part of blogData to be passed to WriteContent
     category: "",
     tags: [],
     status: "draft",
     readTimeManual: "",
-  });
-  const [tagInput, setTagInput] = useState("");
+  })
+  const [tagInput, setTagInput] = useState("")
 
   const categories = [
     "Technology",
@@ -40,35 +35,35 @@ export default function CreateBlog() {
     "Entertainment",
     "Sports",
     "Other",
-  ];
+  ]
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
+    const { name, value } = e.target
     setBlogData((prev) => ({
       ...prev,
       [name]: value,
-    }));
-  };
+    }))
+  }
 
   const handleAddTag = (e) => {
     if (e.key === "Enter" && tagInput.trim()) {
-      e.preventDefault();
+      e.preventDefault()
       if (!blogData.tags.includes(tagInput.trim())) {
         setBlogData((prev) => ({
           ...prev,
           tags: [...prev.tags, tagInput.trim()],
-        }));
+        }))
       }
-      setTagInput("");
+      setTagInput("")
     }
-  };
+  }
 
   const removeTag = (tagToRemove) => {
     setBlogData((prev) => ({
       ...prev,
       tags: prev.tags.filter((tag) => tag !== tagToRemove),
-    }));
-  };
+    }))
+  }
 
   return (
     <div className="relative h-full w-screen overflow-hidden">
@@ -81,34 +76,23 @@ export default function CreateBlog() {
       <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {/* Header */}
         <div className="flex items-center justify-between mb-10">
-          <Button
-            onClick={() => navigate("/dashboard")}
-            className="border-gray-300 bg-pink-200 text-black"
-          >
+          <Button onClick={() => navigate("/dashboard")} className="border-gray-300 bg-pink-200 text-black">
             <ArrowLeft className="w-4 h-4 mr-2" />
             Back to Dashboard
           </Button>
-
-          <Button
-            className="bg-black text-white"
-            onClick={() => navigate("/create/content", { state: blogData })}
-          >
+          <Button className="bg-black text-white" onClick={() => navigate("/create/content", { state: blogData })}>
             Continue to Content →
           </Button>
         </div>
 
-        <h1 className="text-4xl font-serif font-bold text-black p-8 text-center">
-          Create New Blog
-        </h1>
+        <h1 className="text-4xl font-serif font-bold text-black p-8 text-center">Create New Blog</h1>
 
         <div className="grid grid-cols-1 gap-10">
           {/* Row 1: Blog Details */}
           <div>
             <Card className="bg-white border-0 shadow-xl rounded-2xl">
               <CardHeader>
-                <CardTitle className="text-lg font-serif text-black">
-                  Blog Details
-                </CardTitle>
+                <CardTitle className="text-lg font-serif text-black">Blog Details</CardTitle>
               </CardHeader>
               <CardContent className="space-y-6">
                 <div>
@@ -150,9 +134,7 @@ export default function CreateBlog() {
             <div>
               <Card className="bg-white border-0 shadow-xl rounded-2xl">
                 <CardHeader>
-                  <CardTitle className="text-lg font-serif text-black">
-                    Blog Settings
-                  </CardTitle>
+                  <CardTitle className="text-lg font-serif text-black">Blog Settings</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div>
@@ -202,10 +184,7 @@ export default function CreateBlog() {
                   </div>
 
                   <div>
-                    <Label
-                      htmlFor="readTimeManual"
-                      className="text-sm text-gray-700"
-                    >
+                    <Label htmlFor="readTimeManual" className="text-sm text-gray-700">
                       Estimated Read Time (in minutes)
                     </Label>
                     <Input
@@ -227,25 +206,19 @@ export default function CreateBlog() {
             <div>
               <Card className="bg-white border-0 shadow-xl rounded-2xl">
                 <CardHeader>
-                  <CardTitle className="text-lg font-serif text-black">
-                    Preview
-                  </CardTitle>
+                  <CardTitle className="text-lg font-serif text-black">Preview</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <BlogFolderCard
                     blog={{
                       id: "preview",
                       title: blogData.title || "Untitled Blog",
-                      excerpt:
-                        blogData.excerpt ||
-                        "This is a short description of your blog post.",
+                      excerpt: blogData.excerpt || "This is a short description of your blog post.",
                       category: blogData.category || "Uncategorized",
                       readTime: `${
                         blogData.readTimeManual ||
-                        Math.max(
-                          1,
-                          Math.ceil((blogData.content.length || 0) / 500)
-                        )
+                        // Fallback to a default if no manual read time is set
+                        (blogData.content ? Math.max(1, Math.ceil(blogData.content.length / 500)) : 1)
                       } min read`,
                       views: 0,
                       likes: 0,
@@ -259,5 +232,5 @@ export default function CreateBlog() {
         </div>
       </div>
     </div>
-  );
+  )
 }

@@ -1,19 +1,28 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Link, useLocation, useNavigate } from "react-router-dom"
 import { Button } from "@/components/ui/button"
 import { Menu, X, User, LogOut, PenTool, Home } from "lucide-react"
+import api from "../services/api" // Import the API service
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const location = useLocation()
   const navigate = useNavigate()
-  const [user, setUser] = useState(null)
+
+  const [isLoggedIn, setIsLoggedIn] = useState(false) // Track login status
+
+  useEffect(() => {
+    // Check for token on component mount
+    const token = localStorage.getItem("accessToken")
+    setIsLoggedIn(!!token)
+  }, [])
 
   const handleLogout = () => {
-    setUser(null)
-    navigate("/")
+    api.logout() // Clear token from localStorage
+    setIsLoggedIn(false)
+    navigate("/") // Navigate to root after logout
   }
 
   const navLinks = [
@@ -24,11 +33,11 @@ export default function Navbar() {
   return (
     <nav className="fixed top-6 left-1/2 -translate-x-1/2 z-50 px-6 py-2 w-fit max-w-full border border-[#e0d9cf] rounded-full bg-[#f5f1eb]/95 backdrop-blur-md shadow-md flex items-center space-x-4 font-serif text-sm">
       {/* Logo */}
-     <h1 className="!text-xl font-dancing ">
-  <Link to="/" className="!text-black hover:!text-black">
-    postify
-  </Link>
-</h1>
+      <h1 className="!text-xl font-dancing ">
+        <Link to="/" className="!text-black hover:!text-black">
+          postify
+        </Link>
+      </h1>
 
       {/* Desktop Navigation */}
       <div className="hidden md:flex items-center gap-3">
@@ -53,7 +62,7 @@ export default function Navbar() {
 
       {/* Desktop Auth Buttons */}
       <div className="hidden md:flex items-center gap-2">
-        {user ? (
+        {isLoggedIn ? (
           <>
             <Link to="/dashboard">
               <Button
@@ -65,12 +74,7 @@ export default function Navbar() {
                 Dashboard
               </Button>
             </Link>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={handleLogout}
-              className="text-gray-600 hover:text-[#2f2f2f]"
-            >
+            <Button variant="ghost" size="sm" onClick={handleLogout} className="text-gray-600 hover:text-[#2f2f2f]">
               <LogOut className="w-4 h-4 mr-1" />
               Logout
             </Button>
@@ -78,12 +82,12 @@ export default function Navbar() {
         ) : (
           <>
             <Link to="/signin">
-              <Button size="sm" variant="default">
+              <Button size="sm" variant="default" className="bg-black text-white hover:bg-gray-800">
                 Sign In
               </Button>
             </Link>
             <Link to="/signup">
-              <Button size="sm" variant="default">
+              <Button size="sm" variant="default" className="bg-black text-white hover:bg-gray-800">
                 Sign Up
               </Button>
             </Link>
@@ -116,8 +120,7 @@ export default function Navbar() {
               {name}
             </Link>
           ))}
-
-          {user ? (
+          {isLoggedIn ? (
             <>
               <Link
                 to="/dashboard"

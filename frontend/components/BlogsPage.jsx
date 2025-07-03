@@ -168,7 +168,7 @@ export default function BlogsPage() {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="text-center mb-10">
-          <h2 className="text-5xl font-serif font-bold text-black mb-2">Our Blog Collection</h2>
+          <h2 className="text-7xl font-dancing font-bold text-black mb-2">Our Blog Collection</h2>
           <p className="text-lg text-gray-600">Explore articles on various topics.</p>
         </div>
 
