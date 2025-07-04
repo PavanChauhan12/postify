@@ -6,124 +6,28 @@ import BlogFolderCard from "./BlogFolderCard"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Search, Filter } from "lucide-react"
-
-// Mock data to simulate fetching from a database
-const mockBlogs = [
-  {
-    id: 1,
-    title: "10 Essential Tips for Modern Web Development",
-    excerpt: "Discover the latest trends and best practices that every web developer should know in 2024.",
-    author: { name: "Sarah Johnson", avatar: "/placeholder.svg", username: "sarahdev" },
-    category: "Technology",
-    readTime: "5 min read",
-    publishedAt: "2024-07-01T10:00:00Z",
-    likes: 124,
-    comments: 18,
-    views: 2341,
-  },
-  {
-    id: 2,
-    title: "My Journey Through Southeast Asia: A Photo Story",
-    excerpt:
-      "Join me as I explore the vibrant cultures, stunning landscapes, and incredible food across Southeast Asia.",
-    author: { name: "Mike Chen", avatar: "/placeholder.svg", username: "miketravel" },
-    category: "Travel",
-    readTime: "8 min read",
-    publishedAt: "2024-06-25T14:30:00Z",
-    likes: 89,
-    comments: 23,
-    views: 1876,
-  },
-  {
-    id: 3,
-    title: "The Art of Minimalist Living: Less is More",
-    excerpt: "How embracing minimalism transformed my life and how you can start your own journey to simplicity.",
-    author: { name: "Emma Wilson", avatar: "/placeholder.svg", username: "emmaminimal" },
-    category: "Lifestyle",
-    readTime: "6 min read",
-    publishedAt: "2024-06-28T09:15:00Z",
-    likes: 156,
-    comments: 31,
-    views: 3421,
-  },
-  {
-    id: 4,
-    title: "Mastering CSS Grid: Real-World Use Cases",
-    excerpt: "Understand how to use CSS Grid effectively with practical examples and layout tips.",
-    author: { name: "Leo Park", avatar: "/placeholder.svg", username: "leogrid" },
-    category: "Design",
-    readTime: "4 min read",
-    publishedAt: "2024-06-27T11:45:00Z",
-    likes: 76,
-    comments: 10,
-    views: 1294,
-  },
-  {
-    id: 5,
-    title: "A Day in My Life as a Remote Developer",
-    excerpt: "A fun and detailed breakdown of how I work, relax, and stay productive remotely.",
-    author: { name: "Ava Moore", avatar: "/placeholder.svg", username: "avamremote" },
-    category: "Productivity",
-    readTime: "7 min read",
-    publishedAt: "2024-06-18T16:00:00Z",
-    likes: 202,
-    comments: 39,
-    views: 4102,
-  },
-  {
-    id: 6,
-    title: "Exploring AI in Creative Writing",
-    excerpt: "From prompt engineering to plot generation, here’s how AI is reshaping storytelling.",
-    author: { name: "Noah Lee", avatar: "/placeholder.svg", username: "noahwrites" },
-    category: "AI & Writing",
-    readTime: "5 min read",
-    publishedAt: "2024-06-26T08:00:00Z",
-    likes: 98,
-    comments: 15,
-    views: 1882,
-  },
-  {
-    id: 7,
-    title: "The Future of Sustainable Fashion",
-    excerpt: "An in-depth look at how designers and consumers are pushing for eco-friendly practices.",
-    author: { name: "Chloe Green", avatar: "/placeholder.svg", username: "chloestyle" },
-    category: "Fashion",
-    readTime: "7 min read",
-    publishedAt: "2024-07-02T11:00:00Z",
-    likes: 180,
-    comments: 25,
-    views: 3800,
-  },
-  {
-    id: 8,
-    title: "Beginner's Guide to Investing in Stocks",
-    excerpt: "Everything you need to know to start your investment journey with confidence.",
-    author: { name: "David Kim", avatar: "/placeholder.svg", username: "davidfinance" },
-    category: "Finance",
-    readTime: "9 min read",
-    publishedAt: "2024-06-20T10:00:00Z",
-    likes: 210,
-    comments: 45,
-    views: 5100,
-  },
-]
+import api from "../services/api" // Import the API service
 
 export default function BlogsPage() {
   const [blogs, setBlogs] = useState([])
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
   const [searchTerm, setSearchTerm] = useState("")
   const [sortBy, setSortBy] = useState("latest") // 'latest', 'oldest', 'most-liked', 'most-viewed'
 
   useEffect(() => {
-    // Simulate fetching data from a database
     const fetchBlogs = async () => {
       setLoading(true)
-      // In a real app, this would be an API call:
-      // const response = await fetch('/api/blogs');
-      // const data = await response.json();
-      await new Promise((resolve) => setTimeout(resolve, 500)) // Simulate network delay
-      setBlogs(mockBlogs)
-      setLoading(false)
+      setError(null)
+      try {
+        const data = await api.getAllBlogs()
+        setBlogs(data)
+      } catch (err) {
+        setError(err.message || "Failed to fetch blogs.")
+        console.error("BlogsPage fetch error:", err)
+      } finally {
+        setLoading(false)
+      }
     }
 
     fetchBlogs()
@@ -199,7 +103,8 @@ export default function BlogsPage() {
           </Select>
         </div>
 
-        {/* Blog List */}
+        {error && <p className="text-red-500 text-center mb-4">{error}</p>}
+
         {loading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-screen">
             {Array.from({ length: 6 }).map((_, index) => (
@@ -229,7 +134,7 @@ export default function BlogsPage() {
         ) : filteredAndSortedBlogs.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {filteredAndSortedBlogs.map((blog) => (
-              <BlogFolderCard key={blog.id} blog={blog} />
+              <BlogFolderCard key={blog._id} blog={blog} />
             ))}
           </div>
         ) : (

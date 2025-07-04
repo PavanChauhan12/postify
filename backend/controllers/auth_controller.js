@@ -53,7 +53,7 @@ const authController = {
   profile: async (req, res) => {
     try {
       const decoded = req.user;
-      const user = await User.findOne({ email: decoded.email });
+      const user = await User.findOne({ email: req.user.email }).populate("blogs");
       if (!user) {
         return res.status(404).json({ message: "User not found" });
       }

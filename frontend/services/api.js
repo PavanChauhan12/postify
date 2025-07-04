@@ -100,6 +100,20 @@ const api = {
     }
   },
 
+  getAllBlogs: async () => {
+  try {
+    const response = await fetch(`${BASE_URL}/blogs/all`);
+    const data = await response.json();
+    if (!response.ok) {
+      throw new Error(data.message || "Failed to fetch all blogs");
+    }
+    return data;
+  } catch (error) {
+    console.error("Get All Blogs API error:", error);
+    throw error;
+  }
+},
+
   logout: () => {
     localStorage.removeItem("accessToken")
   },

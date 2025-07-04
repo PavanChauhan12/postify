@@ -1,46 +1,48 @@
 "use client"
 
 import { useLocation, useNavigate } from "react-router-dom"
-import { useState, useEffect } from "react" // Import useEffect
+import { useState } from "react"
 import MDEditor from "@uiw/react-md-editor"
 import { Button } from "@/components/ui/button"
 import { Save, Eye, ArrowLeft } from "lucide-react"
 import "@uiw/react-md-editor/markdown-editor.css"
 import "@uiw/react-markdown-preview/markdown.css"
-// import api from "../services/api"; // Uncomment when blog APIs are ready
+import api from "../services/api"
 
 export default function WriteContent() {
-  const { state: metadata } = useLocation()
+  const { state } = useLocation()
   const navigate = useNavigate()
-  const [content, setContent] = useState(metadata?.content || "") // Initialize content from metadata
+  const [blogId, setBlogId] = useState(state?.blogId || null)
+  const [title, setTitle] = useState(state?.title || "Untitled Blog")
+  const [content, setContent] = useState(state?.content || "")
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState(null)
-
-  // Update metadata.content if content changes, so it's always fresh when navigating back
-  useEffect(() => {
-    if (metadata) {
-      metadata.content = content
-    }
-  }, [content, metadata])
 
   const handleSave = async (status) => {
     setError(null)
     setIsLoading(true)
-    const fullBlog = {
-      ...metadata,
+
+    if (!blogId) {
+      setError("Blog ID is missing. Cannot save content.")
+      setIsLoading(false)
+      return
+    }
+
+    // Client-side validation: Prevent publishing if content is empty
+    if (status === "published" && !content.trim()) {
+      setError("Blog content cannot be empty when publishing.")
+      setIsLoading(false)
+      return
+    }
+
+    const blogUpdateData = {
       content,
       status,
     }
 
-    // --- IMPORTANT: Placeholder for blog creation API call ---
-    // The backend code you provided does not include blog-specific endpoints.
-    // You will need to implement these in your backend (e.g., POST /api/blogs)
-    // and then uncomment and use the `api.createBlog` function here.
     try {
-      // Example: await api.createBlog(fullBlog);
-      console.log("Simulating saving blog:", fullBlog)
-      await new Promise((resolve) => setTimeout(resolve, 1000)) // Simulate API call
-      alert(`Blog saved as ${status}!`)
+      const updatedBlog = await api.updateBlog(blogId, blogUpdateData)
+      alert(`Blog saved as ${updatedBlog.status}!`)
       navigate("/dashboard")
     } catch (err) {
       setError(err.message || "Failed to save blog.")
@@ -48,7 +50,6 @@ export default function WriteContent() {
     } finally {
       setIsLoading(false)
     }
-    // --- End of Placeholder ---
   }
 
   return (
@@ -69,7 +70,7 @@ export default function WriteContent() {
 
       {error && <p className="text-red-500 text-sm text-center mb-4">{error}</p>}
 
-      <h1 className="text-2xl font-bold mb-4">{metadata?.title || "Untitled"}</h1>
+      <h1 className="text-2xl font-bold mb-4">{title}</h1>
 
       <MDEditor value={content} onChange={setContent} height={600} />
     </div>

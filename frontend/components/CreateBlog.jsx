@@ -9,20 +9,23 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { ArrowLeft } from "lucide-react"
 import BlogFolderCard from "@/components/BlogFolderCard"
-import { Textarea } from "@/components/ui/textarea" // Ensure Textarea is imported
+import { Textarea } from "@/components/ui/textarea" // Corrected: named import
+import api from "../services/api"
 
 export default function CreateBlog() {
   const navigate = useNavigate()
   const [blogData, setBlogData] = useState({
     title: "",
     excerpt: "",
-    content: "", // content is still part of blogData to be passed to WriteContent
+    content: "", // Optional for now
     category: "",
     tags: [],
     status: "draft",
     readTimeManual: "",
   })
   const [tagInput, setTagInput] = useState("")
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState(null)
 
   const categories = [
     "Technology",
@@ -65,6 +68,41 @@ export default function CreateBlog() {
     }))
   }
 
+  const handleContinueToContent = async () => {
+    setError(null)
+    setIsLoading(true)
+
+    if (!blogData.title) {
+      setError("Blog title is required to continue.")
+      setIsLoading(false)
+      return
+    }
+
+    try {
+      const createdBlog = await api.createBlog({
+        title: blogData.title,
+        excerpt: blogData.excerpt,
+        category: blogData.category,
+        tags: blogData.tags,
+        status: "draft",
+        readTimeManual: blogData.readTimeManual.trim() === "" ? undefined : Number(blogData.readTimeManual),
+      })
+
+      navigate("/create/content", {
+        state: {
+          blogId: createdBlog._id,
+          title: createdBlog.title,
+          content: createdBlog.content || "",
+        },
+      })
+    } catch (err) {
+      setError(err.message || "Failed to create blog draft.")
+      console.error("Create blog draft error:", err)
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
   return (
     <div className="relative h-full w-screen overflow-hidden">
       {/* Background */}
@@ -74,21 +112,22 @@ export default function CreateBlog() {
       </div>
 
       <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        {/* Header */}
         <div className="flex items-center justify-between mb-10">
           <Button onClick={() => navigate("/dashboard")} className="border-gray-300 bg-pink-200 text-black">
             <ArrowLeft className="w-4 h-4 mr-2" />
             Back to Dashboard
           </Button>
-          <Button className="bg-black text-white" onClick={() => navigate("/create/content", { state: blogData })}>
-            Continue to Content →
+          <Button className="bg-black text-white" onClick={handleContinueToContent} disabled={isLoading}>
+            {isLoading ? "Saving Draft..." : "Continue to Content →"}
           </Button>
         </div>
 
         <h1 className="text-4xl font-serif font-bold text-black p-8 text-center">Create New Blog</h1>
 
+        {error && <p className="text-red-500 text-center mb-4">{error}</p>}
+
         <div className="grid grid-cols-1 gap-10">
-          {/* Row 1: Blog Details */}
+          {/* Blog Details */}
           <div>
             <Card className="bg-white border-0 shadow-xl rounded-2xl">
               <CardHeader>
@@ -128,9 +167,8 @@ export default function CreateBlog() {
             </Card>
           </div>
 
-          {/* Row 2: Blog Settings + Preview */}
+          {/* Blog Settings + Preview */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-            {/* Blog Settings */}
             <div>
               <Card className="bg-white border-0 shadow-xl rounded-2xl">
                 <CardHeader>
@@ -217,7 +255,6 @@ export default function CreateBlog() {
                       category: blogData.category || "Uncategorized",
                       readTime: `${
                         blogData.readTimeManual ||
-                        // Fallback to a default if no manual read time is set
                         (blogData.content ? Math.max(1, Math.ceil(blogData.content.length / 500)) : 1)
                       } min read`,
                       views: 0,

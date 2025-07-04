@@ -5,65 +5,42 @@ import { Link, useNavigate } from "react-router-dom"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { PenTool, Eye, Heart, MessageCircle, Plus, Edit3, Trash2, BookOpen } from "lucide-react"
-import api from "../services/api" // Import the API service
+import {
+  PenTool,
+  Eye,
+  Heart,
+  MessageCircle,
+  Plus,
+  Edit3,
+  Trash2,
+  BookOpen,
+} from "lucide-react"
+import api from "../services/api"
 
 export default function Dashboard() {
   const navigate = useNavigate()
-  const [user, setUser] = useState(null) // User data from API
+  const [user, setUser] = useState(null)
+  const [userBlogs, setUserBlogs] = useState([])
   const [loadingUser, setLoadingUser] = useState(true)
   const [errorUser, setErrorUser] = useState(null)
 
-  // Mock blog data (since backend blog APIs are not yet defined)
-  const [blogs] = useState([
-    {
-      id: 1,
-      title: "10 Essential Tips for Modern Web Development",
-      excerpt: "Discover the latest trends and best practices that every web developer should know in 2024.",
-      status: "published",
-      publishedAt: "2 days ago",
-      views: 2341,
-      likes: 124,
-      comments: 18,
-      category: "Technology",
-    },
-    {
-      id: 2,
-      title: "The Art of Minimalist Living",
-      excerpt: "How embracing minimalism transformed my life and how you can start your own journey to simplicity.",
-      status: "draft",
-      publishedAt: null,
-      views: 0,
-      likes: 0,
-      comments: 0,
-      category: "Lifestyle",
-    },
-    {
-      id: 3,
-      title: "Mastering CSS Grid: Real-World Use Cases",
-      excerpt: "Understand how to use CSS Grid effectively with practical examples and layout tips.",
-      status: "published",
-      publishedAt: "1 week ago",
-      views: 1294,
-      likes: 76,
-      comments: 10,
-      category: "Design",
-    },
-  ])
-
   useEffect(() => {
-    const fetchUserProfile = async () => {
+    const fetchUserProfileAndBlogs = async () => {
       setLoadingUser(true)
       setErrorUser(null)
       try {
         const userData = await api.getProfile()
         setUser(userData)
+        setUserBlogs(userData.blogs || [])
       } catch (err) {
         setErrorUser(err.message || "Failed to load user profile.")
         console.error("Dashboard user fetch error:", err)
-        // If token is invalid or missing, redirect to sign-in
-        if (err.message.includes("token") || err.message.includes("log in")) {
-          api.logout() // Clear invalid token
+        if (
+          err.message.includes("token") ||
+          err.message.includes("log in") ||
+          err.message.includes("Session expired")
+        ) {
+          api.logout()
           navigate("/signin")
         }
       } finally {
@@ -71,14 +48,14 @@ export default function Dashboard() {
       }
     }
 
-    fetchUserProfile()
+    fetchUserProfileAndBlogs()
   }, [navigate])
 
   const stats = {
-    totalBlogs: blogs.length,
-    publishedBlogs: blogs.filter((blog) => blog.status === "published").length,
-    totalViews: blogs.reduce((sum, blog) => sum + blog.views, 0),
-    totalLikes: blogs.reduce((sum, blog) => sum + blog.likes, 0),
+    totalBlogs: userBlogs.length,
+    publishedBlogs: userBlogs.filter((blog) => blog.status === "published").length,
+    totalViews: userBlogs.reduce((sum, blog) => sum + (Number(blog.views) || 0), 0),
+    totalLikes: userBlogs.reduce((sum, blog) => sum + (Number(blog.likes) || 0), 0),
   }
 
   if (loadingUser) {
@@ -101,7 +78,6 @@ export default function Dashboard() {
   }
 
   if (!user) {
-    // This case should ideally be caught by errorUser or loadingUser, but as a fallback
     return (
       <div className="min-h-screen bg-[#f5f1eb] flex flex-col items-center justify-center p-4">
         <p className="text-gray-600 text-lg mb-4">User data not available. Please sign in.</p>
@@ -114,9 +90,8 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen bg-[#f5f1eb]">
-     
-
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        
         {/* Header */}
         <div className="mb-8">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
@@ -124,7 +99,7 @@ export default function Dashboard() {
               <h1 className="text-3xl font-serif font-bold text-black">Welcome back, {user.name}!</h1>
               <p className="text-gray-600 mt-1">Manage your blogs and track your progress</p>
             </div>
-            <Link to="/create-blog">
+            <Link to="/create">
               <Button className="mt-4 sm:mt-0 bg-black hover:bg-gray-800 text-white">
                 <Plus className="w-4 h-4 mr-2" />
                 Create New Blog
@@ -168,7 +143,9 @@ export default function Dashboard() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-gray-600">Total Views</p>
-                  <p className="text-2xl font-bold text-black">{stats.totalViews.toLocaleString()}</p>
+                  <p className="text-2xl font-bold text-black">
+                    {stats.totalViews.toLocaleString()}
+                  </p>
                 </div>
                 <div className="p-3 bg-purple-100 rounded-full">
                   <Eye className="w-6 h-6 text-purple-600" />
@@ -192,27 +169,31 @@ export default function Dashboard() {
           </Card>
         </div>
 
-        {/* Recent Blogs */}
+        {/* Blog List */}
         <Card className="bg-white border-0 shadow-lg">
           <CardHeader>
             <CardTitle className="text-xl font-serif text-black">Your Blogs</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              {blogs.length > 0 ? (
-                blogs.map((blog) => (
+              {userBlogs.length > 0 ? (
+                userBlogs.map((blog) => (
                   <div
-                    key={blog.id}
+                    key={blog._id}
                     className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow"
                   >
                     <div className="flex items-start justify-between">
                       <div className="flex-1">
                         <div className="flex items-center space-x-2 mb-2">
-                          <h3 className="text-lg font-semibold text-black hover:text-gray-700">{blog.title}</h3>
+                          <h3 className="text-lg font-semibold text-black hover:text-gray-700">
+                            {blog.title}
+                          </h3>
                           <Badge
                             variant={blog.status === "published" ? "default" : "secondary"}
                             className={
-                              blog.status === "published" ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-800"
+                              blog.status === "published"
+                                ? "bg-green-100 text-green-800"
+                                : "bg-gray-100 text-gray-800"
                             }
                           >
                             {blog.status}
@@ -222,17 +203,19 @@ export default function Dashboard() {
                         <div className="flex items-center space-x-4 text-sm text-gray-500">
                           <span className="flex items-center">
                             <Eye className="w-4 h-4 mr-1" />
-                            {blog.views.toLocaleString()}
+                            {(blog.views ?? 0).toLocaleString()}
                           </span>
                           <span className="flex items-center">
                             <Heart className="w-4 h-4 mr-1" />
-                            {blog.likes}
+                            {blog.likes ?? 0}
                           </span>
                           <span className="flex items-center">
                             <MessageCircle className="w-4 h-4 mr-1" />
-                            {blog.comments}
+                            {blog.comments ?? 0}
                           </span>
-                          {blog.publishedAt && <span>{blog.publishedAt}</span>}
+                          {blog.publishedAt && (
+                            <span>{new Date(blog.publishedAt).toLocaleDateString()}</span>
+                          )}
                         </div>
                       </div>
                       <div className="flex items-center space-x-2 ml-4">
