@@ -1,5 +1,5 @@
 import Hero from "../../components/Hero"
-import AboutSection from "../../components/AboutSection"
+import RoadmapSection from "@/components/RoadMapSection"
 // import { ModelCard } from "@/components/ModelCard"
 import FeaturedBlogsFolderStyle from "@/components/FeaturedBlogs"
 import Navbar from "../../components/NavBar"
@@ -12,7 +12,7 @@ export default function HomePage() {
       <Hero />
       {/* <ModelCard /> */}
       <FeaturedBlogsFolderStyle />
-      <AboutSection />
+      <RoadmapSection />
       <Footer/>
     </div>
   )

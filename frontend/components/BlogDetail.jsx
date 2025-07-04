@@ -29,7 +29,7 @@ export default function BlogDetail() {
       try {
         const res = await api.getBlogById(id)
         setBlog(res)
-        setLikes(res.likes || 0)
+        setLikes(Array.isArray(res.likes) ? res.likes.length : (Number(res.likes) || 0))
         setComments(res.comments || [])
       } catch (err) {
         setError("Failed to fetch blog")
@@ -53,7 +53,7 @@ export default function BlogDetail() {
   const handleLike = async () => {
     try {
       const updatedBlog = await api.likeBlog(id)
-      setLikes(updatedBlog.likes)
+      setLikes(Array.isArray(updatedBlog.likes) ? updatedBlog.likes.length : (Number(updatedBlog.likes) || 0))
     } catch (err) {
       console.error("Failed to like blog", err)
     }

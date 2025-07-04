@@ -1,70 +1,88 @@
-"use client"
+"use client";
 
-import { useState, useEffect, useMemo } from "react"
-import Navbar from "./NavBar"
-import BlogFolderCard from "./BlogFolderCard"
-import { Input } from "@/components/ui/input"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Search, Filter } from "lucide-react"
-import api from "../services/api" // Import the API service
+import { useState, useEffect, useMemo } from "react";
+import Navbar from "./NavBar";
+import BlogFolderCard from "./BlogFolderCard";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Search, Filter } from "lucide-react";
+import api from "../services/api"; // Import the API service
 
 export default function BlogsPage() {
-  const [blogs, setBlogs] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
-  const [searchTerm, setSearchTerm] = useState("")
-  const [sortBy, setSortBy] = useState("latest") // 'latest', 'oldest', 'most-liked', 'most-viewed'
+  const [blogs, setBlogs] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [sortBy, setSortBy] = useState("latest"); // 'latest', 'oldest', 'most-liked', 'most-viewed'
 
   useEffect(() => {
     const fetchBlogs = async () => {
-      setLoading(true)
-      setError(null)
+      setLoading(true);
+      setError(null);
       try {
-        const data = await api.getAllBlogs()
-        setBlogs(data)
+        const data = await api.getAllBlogs();
+        setBlogs(data);
       } catch (err) {
-        setError(err.message || "Failed to fetch blogs.")
-        console.error("BlogsPage fetch error:", err)
+        setError(err.message || "Failed to fetch blogs.");
+        console.error("BlogsPage fetch error:", err);
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
-    }
+    };
 
-    fetchBlogs()
-  }, [])
+    fetchBlogs();
+  }, []);
 
   const filteredAndSortedBlogs = useMemo(() => {
-    let currentBlogs = [...blogs]
+    let currentBlogs = [...blogs];
 
     // 1. Filter by search term
     if (searchTerm) {
       currentBlogs = currentBlogs.filter(
         (blog) =>
           blog.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          blog.excerpt.toLowerCase().includes(searchTerm.toLowerCase()),
-      )
+          blog.excerpt.toLowerCase().includes(searchTerm.toLowerCase())
+      );
     }
 
     // 2. Sort
     switch (sortBy) {
       case "latest":
-        currentBlogs.sort((a, b) => new Date(b.publishedAt) - new Date(a.publishedAt))
-        break
+        currentBlogs.sort(
+          (a, b) => new Date(b.publishedAt) - new Date(a.publishedAt)
+        );
+        break;
       case "oldest":
-        currentBlogs.sort((a, b) => new Date(a.publishedAt) - new Date(b.publishedAt))
-        break
+        currentBlogs.sort(
+          (a, b) => new Date(a.publishedAt) - new Date(b.publishedAt)
+        );
+        break;
       case "most-liked":
-        currentBlogs.sort((a, b) => b.likes - a.likes)
-        break
+        currentBlogs.sort((a, b) => {
+          const aLikes = Array.isArray(a.likes)
+            ? a.likes.length
+            : Number(a.likes) || 0;
+          const bLikes = Array.isArray(b.likes)
+            ? b.likes.length
+            : Number(b.likes) || 0;
+          return bLikes - aLikes;
+        });
+        break;
       case "most-viewed":
-        currentBlogs.sort((a, b) => b.views - a.views)
-        break
+        currentBlogs.sort((a, b) => (b.views || 0) - (a.views || 0));
+        break;
       default:
-        break
+        break;
     }
 
-    return currentBlogs
-  }, [blogs, searchTerm, sortBy])
+    return currentBlogs;
+  }, [blogs, searchTerm, sortBy]);
 
   return (
     <div className="min-h-screen bg-[#f5f1eb] py-16">
@@ -72,8 +90,12 @@ export default function BlogsPage() {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="text-center mb-10">
-          <h2 className="text-7xl font-dancing font-bold text-black mb-2">Our Blog Collection</h2>
-          <p className="text-lg text-gray-600">Explore articles on various topics.</p>
+          <h2 className="text-7xl font-dancing font-bold text-black mb-2">
+            Our Blog Collection
+          </h2>
+          <p className="text-lg text-gray-600">
+            Explore articles on various topics.
+          </p>
         </div>
 
         {/* Search and Filter Section */}
@@ -135,28 +157,37 @@ export default function BlogsPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {filteredAndSortedBlogs.map((blog) => (
               <BlogFolderCard
-  key={blog._id}
-  blog={{
-    id: blog._id, // 👈 Fix is here
-    title: blog.title,
-    excerpt: blog.excerpt,
-    category: blog.category || "Uncategorized",
-    readTime: blog.readTimeManual
-      ? `${blog.readTimeManual} min read`
-      : `${Math.max(1, Math.ceil((blog.content?.length || 0) / 500))} min read`,
-    views: blog.views || 0,
-    likes: blog.likes || 0,
-    comments: blog.comments || 0,
-    status: blog.status,
-    publishedAt: blog.publishedAt,
-  }}
-/>
+                key={blog._id}
+                blog={{
+                  id: blog._id,
+                  title: blog.title,
+                  excerpt: blog.excerpt,
+                  category: blog.category || "Uncategorized",
+                  readTime: blog.readTimeManual
+                    ? `${blog.readTimeManual} min read`
+                    : `${Math.max(
+                        1,
+                        Math.ceil((blog.content?.length || 0) / 500)
+                      )} min read`,
+                  views: blog.views || 0,
+                  likes: Array.isArray(blog.likes)
+                    ? blog.likes.length
+                    : Number(blog.likes) || 0,
+                  comments: Array.isArray(blog.comments)
+                    ? blog.comments.length
+                    : Number(blog.comments) || 0,
+                  status: blog.status,
+                  publishedAt: blog.publishedAt,
+                }}
+              />
             ))}
           </div>
         ) : (
-          <div className="text-center text-gray-600 text-lg py-20">No blogs found matching your criteria.</div>
+          <div className="text-center text-gray-600 text-lg py-20">
+            No blogs found matching your criteria.
+          </div>
         )}
       </div>
     </div>
-  )
+  );
 }

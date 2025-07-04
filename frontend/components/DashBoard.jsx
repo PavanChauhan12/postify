@@ -53,7 +53,7 @@ export default function Dashboard() {
       0
     ),
     totalLikes: userBlogs.reduce(
-      (sum, blog) => sum + (Number(blog.likes) || 0),
+      (sum, blog) => sum + (Array.isArray(blog.likes) ? blog.likes.length : (Number(blog.likes) || 0)),
       0
     ),
   };
@@ -204,8 +204,8 @@ export default function Dashboard() {
                             Math.ceil((blog.content?.length || 0) / 500)
                           )} min read`,
                       views: blog.views || 0,
-                      likes: blog.likes || 0,
-                      comments: blog.comments || 0,
+                      likes: Array.isArray(blog.likes) ? blog.likes.length : (Number(blog.likes) || 0),
+                      comments: Array.isArray(blog.comments) ? blog.comments.length : (Number(blog.comments) || 0),
                       status: blog.status,
                       publishedAt: blog.publishedAt,
                     }}
