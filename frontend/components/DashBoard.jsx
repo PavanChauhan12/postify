@@ -8,7 +8,7 @@ import BlogFolderCard from "./BlogFolderCard";
 import { PenTool, Eye, Heart, Plus, BookOpen } from "lucide-react";
 import api from "../services/api";
 import Navbar from "./NavBar";
-import { PinnedCard } from "./PinnedCard";
+
 
 export default function Dashboard() {
   const navigate = useNavigate();
@@ -122,7 +122,7 @@ export default function Dashboard() {
 
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <PinnedCard className="shadow-lg">
+          <Card className="shadow-lg">
             <div className="p-6 flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-gray-600">Total Blogs</p>
@@ -134,9 +134,9 @@ export default function Dashboard() {
                 <BookOpen className="w-6 h-6 text-blue-600" />
               </div>
             </div>
-          </PinnedCard>
+          </Card>
 
-          <PinnedCard className="shadow-lg">
+          <Card className="shadow-lg">
             <div className="p-6 flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-gray-600">Published</p>
@@ -148,9 +148,9 @@ export default function Dashboard() {
                 <PenTool className="w-6 h-6 text-green-600" />
               </div>
             </div>
-          </PinnedCard>
+          </Card>
 
-          <PinnedCard className="shadow-lg">
+          <Card className="shadow-lg">
             <div className="p-6 flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-gray-600">Total Views</p>
@@ -162,9 +162,9 @@ export default function Dashboard() {
                 <Eye className="w-6 h-6 text-purple-600" />
               </div>
             </div>
-          </PinnedCard>
+          </Card>
 
-          <PinnedCard className="shadow-lg">
+          <Card className="shadow-lg">
             <div className="p-6 flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-gray-600">Total Likes</p>
@@ -176,7 +176,7 @@ export default function Dashboard() {
                 <Heart className="w-6 h-6 text-pink-600" />
               </div>
             </div>
-          </PinnedCard>
+          </Card>
         </div>
 
         {/* Blog List */}
