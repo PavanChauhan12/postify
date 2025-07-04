@@ -15,9 +15,7 @@ const authController = {
       }
       if (await bcrypt.compare(password, user.password)) {
         await user.save();
-        const accessToken = jwtController.signAccessToken(
-          user.email
-        );
+        const accessToken = jwtController.signAccessToken(user);
         await user.save();
         res.header("Authorization", `Bearer ${accessToken}`);
         res.json({ accessToken });
@@ -52,8 +50,7 @@ const authController = {
 
   profile: async (req, res) => {
     try {
-      const decoded = req.user;
-      const user = await User.findOne({ email: decoded.email });
+      const user = req.user;
       if (!user) {
         return res.status(404).json({ message: "User not found" });
       }

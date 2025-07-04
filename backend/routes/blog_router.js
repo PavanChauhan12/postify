@@ -35,9 +35,9 @@ router.post('/create', authMiddleware, async (req, res) => {
 
 // You would add more routes here for GET all blogs, GET blog by ID, PUT/DELETE blog, etc.
 // Example: GET /blogs - Get all blogs (for the /blogs page)
-router.get('/all', async (req, res) => {
+router.get('/all', authMiddleware, async (req, res) => {
   try {
-    const blogs = await Blog.find().populate('author', 'name username avatar'); // Populate author details
+    const blogs = await Blog.find({ author: req.user._id }).populate('author', 'name username avatar'); // Populate author details
     res.status(200).json(blogs);
   } catch (error) {
     console.error('Error fetching blogs:', error);
