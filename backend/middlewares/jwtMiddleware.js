@@ -10,7 +10,10 @@ async function verifyAccessToken(req, res, next) {
   const token = authHeader.replace("Bearer ", "");
   try {
     const decoded = jwt.verify(token, process.env.ACCESS_KEY_SECRET);
-    const user = await User.findOne({ regNo: decoded.regNo });
+    const user = await User.findById(decoded.id);
+    if (!user) {
+      return res.status(404).json({ message: "User not found." });
+    }
     if (!user.isVerified) {
       return res.status(403).json({ error: "User is not verified. Please verify your account." });
     }
