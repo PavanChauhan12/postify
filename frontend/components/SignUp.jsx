@@ -281,7 +281,6 @@ export default function SignUp() {
               <Button
                 type="button"
                 onClick={handlePreviousStep}
-                variant="outline"
                 className="flex-1 border-gray-300 text-black hover:bg-gray-100 bg-transparent"
               >
                 <ArrowLeft className="mr-2 w-4 h-4" /> Back

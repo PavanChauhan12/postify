@@ -27,7 +27,6 @@ export function ModelCard() {
 
           <Link to="/connect" className="block">
             <Button
-              variant="outline"
               className="w-full border-black text-black hover:bg-gray-50 py-3 rounded-lg font-medium bg-transparent text-sm"
             >
               CONNECT WITH US

@@ -66,7 +66,6 @@ export default function Navbar() {
           <>
             <Link to="/dashboard">
               <Button
-                variant="outline"
                 size="sm"
                 className="text-white border-[#2f2f2f] bg-white hover:bg-[#2f2f2f] hover:text-white font-medium"
               >
@@ -74,7 +73,7 @@ export default function Navbar() {
                 Dashboard
               </Button>
             </Link>
-            <Button variant="ghost" size="sm" onClick={handleLogout} className="text-white ">
+            <Button size="sm" onClick={handleLogout} className="text-white ">
               <LogOut className="w-4 h-4 mr-1" />
               Logout
             </Button>
@@ -82,13 +81,8 @@ export default function Navbar() {
         ) : (
           <>
             <Link to="/signin">
-              <Button size="sm" variant="default" className="bg-black text-white hover:bg-gray-800">
+              <Button size="sm" className="bg-black text-white hover:bg-gray-800">
                 Sign In
-              </Button>
-            </Link>
-            <Link to="/signup">
-              <Button size="sm" variant="default" className="bg-black text-white hover:bg-gray-800">
-                Sign Up
               </Button>
             </Link>
           </>
@@ -97,7 +91,7 @@ export default function Navbar() {
 
       {/* Mobile Menu Toggle */}
       <div className="md:hidden">
-        <Button variant="ghost" size="sm" onClick={() => setIsMenuOpen(!isMenuOpen)}>
+        <Button size="sm" onClick={() => setIsMenuOpen(!isMenuOpen)}>
           {isMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
         </Button>
       </div>
@@ -135,7 +129,7 @@ export default function Navbar() {
                   handleLogout()
                   setIsMenuOpen(false)
                 }}
-                className="flex items-center gap-2 px-4 py-2 text-[#2f2f2f] hover:bg-[#eae4da] rounded-md"
+                className="flex items-center gap-2 px-4 py-2 text-white hover:bg-[#eae4da] rounded-md"
               >
                 <LogOut className="w-5 h-5" />
                 Logout
@@ -149,13 +143,6 @@ export default function Navbar() {
                 className="px-4 py-2 bg-[#bdddef] text-[#2f2f2f] hover:bg-[#a9d3eb] rounded-md text-center font-medium"
               >
                 Sign In
-              </Link>
-              <Link
-                to="/signup"
-                onClick={() => setIsMenuOpen(false)}
-                className="px-4 py-2 bg-[#f2cbd3] text-[#2f2f2f] hover:bg-[#e8b9c2] rounded-md text-center font-medium"
-              >
-                Sign Up
               </Link>
             </>
           )}

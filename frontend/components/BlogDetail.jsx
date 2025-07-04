@@ -86,7 +86,7 @@ export default function BlogDetail() {
   }
 
   return (
-    <div className="bg-[#f5f1eb] min-h-screen">
+    <div className="bg-[#f5f1eb] min-h-screen p-12">
       <div className="w-full px-4 pb-16">
         {/* Header Row (Title + Back) */}
         <div className="flex items-center justify-between mb-6">
@@ -99,7 +99,7 @@ export default function BlogDetail() {
         </div>
 
         {/* Centered Blog Content */}
-        <div className="max-w-3xl mx-auto">
+        <div className=" mx-auto">
           <p className="text-sm text-gray-500 uppercase tracking-wide mb-2 text-center">
             {blog.category || "Uncategorized"}
           </p>

@@ -211,7 +211,6 @@ export default function CreateBlog() {
                       {blogData.tags.map((tag, index) => (
                         <Badge
                           key={index}
-                          variant="secondary"
                           className="cursor-pointer hover:bg-gray-200"
                           onClick={() => removeTag(tag)}
                         >
