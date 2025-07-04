@@ -134,7 +134,23 @@ export default function BlogsPage() {
         ) : filteredAndSortedBlogs.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {filteredAndSortedBlogs.map((blog) => (
-              <BlogFolderCard key={blog._id} blog={blog} />
+              <BlogFolderCard
+  key={blog._id}
+  blog={{
+    id: blog._id, // 👈 Fix is here
+    title: blog.title,
+    excerpt: blog.excerpt,
+    category: blog.category || "Uncategorized",
+    readTime: blog.readTimeManual
+      ? `${blog.readTimeManual} min read`
+      : `${Math.max(1, Math.ceil((blog.content?.length || 0) / 500))} min read`,
+    views: blog.views || 0,
+    likes: blog.likes || 0,
+    comments: blog.comments || 0,
+    status: blog.status,
+    publishedAt: blog.publishedAt,
+  }}
+/>
             ))}
           </div>
         ) : (

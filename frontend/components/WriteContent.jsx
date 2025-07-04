@@ -28,20 +28,18 @@ export default function WriteContent() {
       return
     }
 
-    // Client-side validation: Prevent publishing if content is empty
     if (status === "published" && !content.trim()) {
       setError("Blog content cannot be empty when publishing.")
       setIsLoading(false)
       return
     }
 
-    const blogUpdateData = {
-      content,
-      status,
-    }
-
     try {
-      const updatedBlog = await api.updateBlog(blogId, blogUpdateData)
+      const updatedBlog = await api.updateBlog(blogId, {
+        content,
+        status,
+      })
+
       alert(`Blog saved as ${updatedBlog.status}!`)
       navigate("/dashboard")
     } catch (err) {

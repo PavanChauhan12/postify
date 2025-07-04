@@ -68,13 +68,13 @@ export default function Navbar() {
               <Button
                 variant="outline"
                 size="sm"
-                className="text-[#2f2f2f] border-[#2f2f2f] bg-white hover:bg-[#2f2f2f] hover:text-white font-medium"
+                className="text-white border-[#2f2f2f] bg-white hover:bg-[#2f2f2f] hover:text-white font-medium"
               >
                 <User className="w-4 h-4 mr-1" />
                 Dashboard
               </Button>
             </Link>
-            <Button variant="ghost" size="sm" onClick={handleLogout} className="text-gray-600 hover:text-[#2f2f2f]">
+            <Button variant="ghost" size="sm" onClick={handleLogout} className="text-white ">
               <LogOut className="w-4 h-4 mr-1" />
               Logout
             </Button>

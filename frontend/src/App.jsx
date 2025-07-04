@@ -6,7 +6,7 @@ import Dashboard from "@/components/DashBoard"
 import CreateBlog from "@/components/CreateBlog"
 import WriteContent from "@/components/WriteContent"
 import BlogsPage from "@/components/BlogsPage"
-
+import BlogDetail from "@/components/BlogDetail"
 
 function App() {
   return (
@@ -14,7 +14,7 @@ function App() {
       <Router>
         <Routes>
           <Route path="/blogs" element={<BlogsPage />} />
-         
+         <Route path="/blog/:id" element={<BlogDetail />} />
           <Route path="/" element={<HomePage />} />
           <Route path="/signup" element={<SignUp />} />
           <Route path="/signin" element={<SignIn />} />

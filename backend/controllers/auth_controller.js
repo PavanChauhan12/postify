@@ -49,16 +49,21 @@ const authController = {
   },
 
   profile: async (req, res) => {
-    try {
-      const user = req.user;
-      if (!user) {
-        return res.status(404).json({ message: "User not found" });
-      }
-      res.status(201).json(user);
-    } catch (error) {
-      res.status(400).json({ error: "Error" });
+  try {
+    const decoded = req.user;
+    const user = await User.findOne({ email: decoded.email }).populate("blogs");
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
     }
-  },
+
+    res.status(200).json(user);
+  } catch (error) {
+    console.error("Profile fetch error:", error);
+    res.status(400).json({ error: "Error" });
+  }
+},
+
 
   editProfile: async(req, res) => {
     try{

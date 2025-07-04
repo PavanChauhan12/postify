@@ -1,23 +1,19 @@
-const BASE_URL = "http://localhost:3000" // Your backend server URL
+const BASE_URL = "http://localhost:3000";
 
 const api = {
   signup: async (userData) => {
     try {
       const response = await fetch(`${BASE_URL}/auth/signup`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(userData),
-      })
-      const data = await response.json()
-      if (!response.ok) {
-        throw new Error(data.error || "Signup failed")
-      }
-      return data
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || "Signup failed");
+      return data;
     } catch (error) {
-      console.error("Signup API error:", error)
-      throw error
+      console.error("Signup API error:", error);
+      throw error;
     }
   },
 
@@ -25,37 +21,35 @@ const api = {
     try {
       const response = await fetch(`${BASE_URL}/auth/login`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(credentials),
-      })
+      });
 
-      const data = await response.json()
-      if (!response.ok) {
-        throw new Error(data.message || "Login failed")
-      }
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.message || "Login failed");
 
-      // ✅ Expecting token in the response body
-      const accessToken = data.token || data.accessToken
+      const accessToken = data.token || data.accessToken;
       if (accessToken) {
-        localStorage.setItem("accessToken", accessToken)
+        localStorage.setItem("accessToken", accessToken);
       } else {
-        throw new Error("Access token not found in response")
+        throw new Error("Access token not found in response");
       }
 
-      return data
+      return data;
     } catch (error) {
-      console.error("Login API error:", error)
-      throw error
+      console.error("Login API error:", error);
+      throw error;
     }
   },
 
+  logout: () => {
+    localStorage.removeItem("accessToken");
+  },
+
   getProfile: async () => {
-    const token = localStorage.getItem("accessToken")
-    if (!token) {
-      throw new Error("No access token found. Please log in.")
-    }
+    const token = localStorage.getItem("accessToken");
+    if (!token) throw new Error("No access token found. Please log in.");
+
     try {
       const response = await fetch(`${BASE_URL}/auth/profile`, {
         method: "GET",
@@ -63,23 +57,22 @@ const api = {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-      })
-      const data = await response.json()
-      if (!response.ok) {
-        throw new Error(data.message || "Failed to fetch profile")
-      }
-      return data
+      });
+
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.message || "Failed to fetch profile");
+
+      return data;
     } catch (error) {
-      console.error("Get Profile API error:", error)
-      throw error
+      console.error("Get Profile API error:", error);
+      throw error;
     }
   },
 
   editProfile: async (profileData) => {
-    const token = localStorage.getItem("accessToken")
-    if (!token) {
-      throw new Error("No access token found. Please log in.")
-    }
+    const token = localStorage.getItem("accessToken");
+    if (!token) throw new Error("No access token found. Please log in.");
+
     try {
       const response = await fetch(`${BASE_URL}/auth/editProfile`, {
         method: "PUT",
@@ -88,35 +81,141 @@ const api = {
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(profileData),
-      })
-      const data = await response.json()
-      if (!response.ok) {
-        throw new Error(data.message || "Failed to update profile")
-      }
-      return data
+      });
+
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.message || "Failed to update profile");
+
+      return data;
     } catch (error) {
-      console.error("Edit Profile API error:", error)
-      throw error
+      console.error("Edit Profile API error:", error);
+      throw error;
+    }
+  },
+
+  createBlog: async (blogData) => {
+    const token = localStorage.getItem("accessToken");
+    if (!token) throw new Error("No access token found. Please log in.");
+
+    try {
+      const response = await fetch(`${BASE_URL}/blogs/create`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(blogData),
+      });
+
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.message || "Failed to create blog");
+
+      return data;
+    } catch (error) {
+      console.error("Create Blog API error:", error);
+      throw error;
+    }
+  },
+
+  updateBlog: async (blogId, updateData) => {
+    const token = localStorage.getItem("accessToken");
+    if (!token) throw new Error("No access token found. Please log in.");
+
+    try {
+      const response = await fetch(`${BASE_URL}/blogs/${blogId}/content`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(updateData),
+      });
+
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.message || "Failed to update blog");
+
+      return data.blog || data;
+    } catch (error) {
+      console.error("Update Blog API error:", error);
+      throw error;
     }
   },
 
   getAllBlogs: async () => {
-  try {
-    const response = await fetch(`${BASE_URL}/blogs/all`);
-    const data = await response.json();
-    if (!response.ok) {
-      throw new Error(data.message || "Failed to fetch all blogs");
+    try {
+      const response = await fetch(`${BASE_URL}/blogs/all`);
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.message || "Failed to fetch all blogs");
+      return data;
+    } catch (error) {
+      console.error("Get All Blogs API error:", error);
+      throw error;
     }
-    return data;
-  } catch (error) {
-    console.error("Get All Blogs API error:", error);
-    throw error;
+  },
+
+  getBlogById: async (id) => {
+  const token = localStorage.getItem("token");
+
+  const headers = token
+    ? { Authorization: `Bearer ${token}` }
+    : {};
+
+  const res = await fetch(`${BASE_URL}/blogs/${id}`, {
+    method: "GET",
+    headers, // only sends token if it exists
+  });
+
+  if (!res.ok) {
+    const err = await res.json();
+    throw new Error(err.message || "Failed to fetch blog");
   }
+
+  return await res.json();
 },
 
-  logout: () => {
-    localStorage.removeItem("accessToken")
-  },
-}
+  likeBlog: async (id) => {
+    const token = localStorage.getItem("accessToken");
 
-export default api
+    try {
+      const response = await fetch(`${BASE_URL}/blogs/${id}/like`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          ...(token && { Authorization: `Bearer ${token}` }),
+        },
+      });
+
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.message || "Failed to like blog");
+      return data;
+    } catch (error) {
+      console.error("Like API error:", error);
+      throw error;
+    }
+  },
+
+  commentBlog: async (id, comment) => {
+    const token = localStorage.getItem("accessToken");
+
+    try {
+      const response = await fetch(`${BASE_URL}/blogs/${id}/comment`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          ...(token && { Authorization: `Bearer ${token}` }),
+        },
+        body: JSON.stringify(comment),
+      });
+
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.message || "Failed to comment");
+
+      return data;
+    } catch (error) {
+      console.error("Comment API error:", error);
+      throw error;
+    }
+  },
+};
+
+export default api;
