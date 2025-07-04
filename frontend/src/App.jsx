@@ -7,10 +7,12 @@ import CreateBlog from "@/components/CreateBlog"
 import WriteContent from "@/components/WriteContent"
 import BlogsPage from "@/components/BlogsPage"
 import BlogDetail from "@/components/BlogDetail"
+import { Toaster } from 'react-hot-toast'
 
 function App() {
   return (
     <>
+     <Toaster position="top-right" reverseOrder={false} />
       <Router>
         <Routes>
           <Route path="/blogs" element={<BlogsPage />} />
@@ -21,8 +23,10 @@ function App() {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/create" element={<CreateBlog />} />
           <Route path="/create/content" element={<WriteContent />} />
+          <Route path="/edit/:id" element={<WriteContent />} />
         </Routes>
       </Router>
+     
     </>
   )
 }

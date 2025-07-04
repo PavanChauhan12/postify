@@ -1,22 +1,47 @@
 "use client"
 
-import { useLocation, useNavigate } from "react-router-dom"
-import { useState } from "react"
-import MDEditor from "@uiw/react-md-editor"
+import { useState, useEffect } from "react"
+import { useParams, useLocation, useNavigate } from "react-router-dom"
+import MdEditor from "react-markdown-editor-lite"
+import "react-markdown-editor-lite/lib/index.css"
 import { Button } from "@/components/ui/button"
 import { Save, Eye, ArrowLeft } from "lucide-react"
-import "@uiw/react-md-editor/markdown-editor.css"
-import "@uiw/react-markdown-preview/markdown.css"
 import api from "../services/api"
+import MarkdownIt from "markdown-it"
+import toast from 'react-hot-toast'
+const mdParser = new MarkdownIt()
 
 export default function WriteContent() {
+  const { id } = useParams()
   const { state } = useLocation()
   const navigate = useNavigate()
-  const [blogId, setBlogId] = useState(state?.blogId || null)
-  const [title, setTitle] = useState(state?.title || "Untitled Blog")
-  const [content, setContent] = useState(state?.content || "")
+
+  const [blogId, setBlogId] = useState(state?.blogId || state?.blog?._id || id || null)
+  const [title, setTitle] = useState(state?.title || state?.blog?.title || "")
+  const [content, setContent] = useState(state?.content || state?.blog?.content || "")
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState(null)
+
+  // 🔄 Fetch blog if editing directly via URL
+  useEffect(() => {
+    const fetchBlog = async () => {
+      if (blogId && !state?.blog && !state?.title) {
+        try {
+          const blog = await api.getBlogById(blogId)
+          if (blog && blog.author?._id === api.getCurrentUserId()) {
+            setTitle(blog.title)
+            setContent(blog.content)
+          } else {
+            setError("Unauthorized or blog not found.")
+          }
+        } catch (err) {
+          setError("Failed to load blog.")
+          console.error(err)
+        }
+      }
+    }
+    fetchBlog()
+  }, [blogId, state])
 
   const handleSave = async (status) => {
     setError(null)
@@ -35,19 +60,31 @@ export default function WriteContent() {
     }
 
     try {
-      const updatedBlog = await api.updateBlog(blogId, {
-        content,
-        status,
-      })
+      let updatedBlog
+      if (state?.blog) {
+        updatedBlog = await api.editBlog(blogId, { content, status })
+      } else {
+        updatedBlog = await api.updateBlog(blogId, { content, status })
+      }
 
-      alert(`Blog saved as ${updatedBlog.status}!`)
+      toast.success(`Blog ${status === "published" ? "published" : "saved"} successfully!`)
       navigate("/dashboard")
     } catch (err) {
       setError(err.message || "Failed to save blog.")
-      console.error("Save blog error:", err)
+      console.error(err)
     } finally {
       setIsLoading(false)
     }
+  }
+
+  const handleImageUpload = async (file) => {
+    return new Promise((resolve) => {
+      const reader = new FileReader()
+      reader.onload = () => {
+        resolve(reader.result) // base64 string
+      }
+      reader.readAsDataURL(file)
+    })
   }
 
   return (
@@ -60,7 +97,11 @@ export default function WriteContent() {
           <Button onClick={() => handleSave("draft")} disabled={isLoading}>
             <Save className="mr-2" /> Save Draft
           </Button>
-          <Button className="bg-black text-white" onClick={() => handleSave("published")} disabled={isLoading}>
+          <Button
+            className="bg-black text-white"
+            onClick={() => handleSave("published")}
+            disabled={isLoading}
+          >
             <Eye className="mr-2" /> Publish
           </Button>
         </div>
@@ -68,9 +109,19 @@ export default function WriteContent() {
 
       {error && <p className="text-red-500 text-sm text-center mb-4">{error}</p>}
 
-      <h1 className="text-2xl font-bold mb-4">{title}</h1>
+      <h1 className="text-2xl font-bold mb-4">{title || "Untitled Blog"}</h1>
 
-      <MDEditor value={content} onChange={setContent} height={600} />
+      <MdEditor
+        value={content}
+        style={{ height: "600px" }}
+        renderHTML={(text) => mdParser.render(text)}
+        onChange={({ text }) => setContent(text)}
+        config={{
+          imageAccept: ".jpg,.jpeg,.png,.webp",
+          onImageUpload: handleImageUpload,
+          syncScrollMode: ["leftFollowRight", "rightFollowLeft"],
+        }}
+      />
     </div>
   )
 }

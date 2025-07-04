@@ -57,28 +57,32 @@ const blogController = {
   },
 
   // Get blog by ID with view tracking
-  getBlogById: async (req, res) => {
-    try {
-      // Validate ObjectId format
-      if (!isValidObjectId(req.params.id)) {
-        return res.status(400).json({ message: 'Invalid blog ID format' });
-      }
+ getBlogById: async (req, res) => {
+  try {
+    const blog = await Blog.findById(req.params.id).populate('author', 'name username avatar');
+    if (!blog) return res.status(404).json({ message: 'Blog not found' });
 
-      // Increment view count and get the updated blog
-      const blog = await Blog.findByIdAndUpdate(
-        req.params.id,
-        { $inc: { views: 1 } },
-        { new: true }
-      ).populate('author', 'name username avatar');
-      
-      if (!blog) return res.status(404).json({ message: 'Blog not found' });
+    // Increment total views
+    blog.views = (blog.views || 0) + 1;
 
-      res.json(blog);
-    } catch (err) {
-      console.error('Error fetching blog:', err);
-      res.status(500).json({ message: 'Server error', error: err.message });
+    // Track dailyViews
+    const today = new Date().toISOString().slice(0, 10); // YYYY-MM-DD
+    const existingEntry = blog.dailyViews.find(entry => entry.date === today);
+
+    if (existingEntry) {
+      existingEntry.count += 1;
+    } else {
+      blog.dailyViews.push({ date: today, count: 1 });
     }
-  },
+
+    await blog.save();
+
+    res.status(200).json(blog);
+  } catch (err) {
+    console.error("Error fetching blog:", err);
+    res.status(500).json({ message: "Server error", error: err.message });
+  }
+},
 
   // Update content/status
   updateBlogContent: async (req, res) => {
@@ -188,6 +192,46 @@ const blogController = {
       res.status(500).json({ message: 'Server error', error: err.message });
     }
   },
+  editBlog: async (req, res) => {
+  try {
+    const blogId = req.params.id;
+    if (!isValidObjectId(blogId)) {
+      return res.status(400).json({ message: 'Invalid blog ID format' });
+    }
+
+    const blog = await Blog.findById(blogId);
+    if (!blog) return res.status(404).json({ message: 'Blog not found' });
+    if (String(blog.author) !== String(req.user._id))
+      return res.status(403).json({ message: 'Unauthorized' });
+
+    const {
+      title,
+      excerpt,
+      content,
+      category,
+      tags,
+      status,
+      readTimeManual,
+    } = req.body;
+
+    if (status === 'published' && (!content || content.trim() === ''))
+      return res.status(400).json({ message: 'Content is required to publish' });
+
+    if (title) blog.title = title;
+    if (excerpt !== undefined) blog.excerpt = excerpt;
+    if (content !== undefined) blog.content = content;
+    if (category) blog.category = category;
+    if (tags) blog.tags = tags;
+    if (status) blog.status = status;
+    if (readTimeManual !== undefined) blog.readTimeManual = readTimeManual;
+
+    await blog.save();
+    res.status(200).json({ message: 'Blog updated successfully', blog });
+  } catch (err) {
+    console.error("Error editing blog:", err);
+    res.status(500).json({ message: "Server error", error: err.message });
+  }
+},
 
 
 };

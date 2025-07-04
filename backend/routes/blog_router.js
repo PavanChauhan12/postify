@@ -9,5 +9,6 @@ router.get('/:id', blogController.getBlogById);
 router.put('/:id/content', authMiddleware, blogController.updateBlogContent);
 router.post('/:id/comment', blogController.addComment);
 router.post('/:id/like', authMiddleware, blogController.likeBlog);
+router.put('/:id/edit', authMiddleware, blogController.editBlog);
 
 module.exports = router;

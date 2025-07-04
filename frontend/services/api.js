@@ -217,6 +217,24 @@ const api = {
       throw error;
     }
   },
+  editBlog: async (blogId, updatedData) => {
+  const token = localStorage.getItem("accessToken");
+  if (!token) throw new Error("No access token found. Please log in.");
+
+  const response = await fetch(`${BASE_URL}/blogs/${blogId}/edit`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(updatedData),
+  });
+
+  const data = await response.json();
+  if (!response.ok) throw new Error(data.message || "Failed to edit blog");
+
+  return data.blog;
+},
 };
 
 export default api;

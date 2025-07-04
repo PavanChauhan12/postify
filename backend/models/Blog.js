@@ -30,6 +30,15 @@ const blogSchema = new Schema({
   status: { type: String, enum: ['draft', 'published'], default: 'draft' },
   readTimeManual: Number,
   views: { type: Number, default: 0 },
+  dailyViews: {
+  type: [
+    {
+      date: { type: String }, // e.g., "2025-07-04"
+      count: { type: Number, default: 0 },
+    },
+  ],
+  default: [],
+},
   likes: { type: [likeSchema], default: [] },
   comments: { type: [commentSchema], default: [] },
   publishedAt: Date,

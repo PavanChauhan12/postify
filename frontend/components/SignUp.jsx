@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label"
 import AuthLayout from "./AuthLayout"
 import { Eye, EyeOff, ArrowLeft, ArrowRight } from "lucide-react" // Import ArrowRight
 import api from "../services/api" // Import the API service
+import toast from 'react-hot-toast'
 
 export default function SignUp() {
   const [formData, setFormData] = useState({
@@ -78,7 +79,7 @@ export default function SignUp() {
       // Destructure to match backend schema, excluding confirmPassword
       const { confirmPassword, ...dataToSend } = formData
       await api.signup(dataToSend)
-      alert("Signup successful! Please sign in.")
+      toast.success("Signup successful! Please sign in.")
       navigate("/signin") // Redirect to sign-in after successful signup
     } catch (err) {
       setError(err.message || "An unexpected error occurred during signup.")
