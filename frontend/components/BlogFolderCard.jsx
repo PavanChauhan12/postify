@@ -1,11 +1,12 @@
-import { Heart, MessageCircle, Share2, Clock, Eye } from "lucide-react"
-import { useNavigate } from "react-router-dom"
+import React, { useState } from "react"
+import { Heart, MessageCircle, Share2, Clock, Eye } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 export default function BlogFolderCard({ blog }) {
-  const navigate = useNavigate()
-  const handleShare = (e) => {
+  const navigate = useNavigate();
+  const [showOptions, setShowOptions] = useState(false);
+  const handleNativeShare = (e) => {
   e.stopPropagation();
-
   const shareData = {
     title: blog.title,
     text: blog.excerpt,
@@ -13,14 +14,20 @@ export default function BlogFolderCard({ blog }) {
   };
 
   if (navigator.share) {
-    navigator.share(shareData).catch((err) => {
-      console.error("Sharing failed", err);
-    });
+    navigator.share(shareData).catch(console.error);
   } else {
-    navigator.clipboard.writeText(shareData.url)
-      .then(() => alert("Link copied to clipboard!"))
-      .catch(() => alert("Failed to copy link."));
+    alert("Web Share not supported on this device.");
   }
+  setShowOptions(false);
+};
+
+const handleCopyLink = (e) => {
+  e.stopPropagation();
+  const url = `${window.location.origin}/blog/${blog.id}`;
+  navigator.clipboard.writeText(url)
+    .then(() => alert("Link copied to clipboard!"))
+    .catch(() => alert("Failed to copy link."));
+  setShowOptions(false);
 };
 
 
@@ -38,9 +45,7 @@ export default function BlogFolderCard({ blog }) {
           <h3 className="text-2xl font-bold text-black font-serif leading-snug hover:text-[#e67300] transition-colors">
             {blog.title}
           </h3>
-          <p className="text-gray-700 text-sm line-clamp-3">
-            {blog.excerpt}
-          </p>
+          <p className="text-gray-700 text-sm line-clamp-3">{blog.excerpt}</p>
         </div>
 
         <div className="flex items-center gap-5 text-sm text-gray-600">
@@ -67,14 +72,39 @@ export default function BlogFolderCard({ blog }) {
             {blog.comments}
           </span>
         </div>
-        <button
-  onClick={handleShare}
-  className="hover:text-gray-900 bg-black text-white p-2 rounded-md"
->
-  <Share2 className="w-4 h-4" />
-</button>
+        <div className="relative">
+  <button
+    onClick={(e) => {
+      e.stopPropagation();
+      setShowOptions(!showOptions);
+    }}
+    className="hover:text-gray-900 bg-black text-white p-2 rounded-md"
+  >
+    <Share2 className="w-4 h-4" />
+  </button>
+
+  {showOptions && (
+    <div
+      onClick={(e) => e.stopPropagation()}
+      className="absolute right-0 mt-2 w-32 bg-white border border-gray-200 shadow-md rounded-md z-10 text-black text-sm"
+    >
+      <button
+        onClick={handleNativeShare}
+        className="w-full text-left px-3 py-2 hover:bg-gray-100"
+      >
+        Share
+      </button>
+      <button
+        onClick={handleCopyLink}
+        className="w-full text-left px-3 py-2 hover:bg-gray-100"
+      >
+        Copy Link
+      </button>
+    </div>
+  )}
+</div>
 
       </div>
     </div>
-  )
+  );
 }
