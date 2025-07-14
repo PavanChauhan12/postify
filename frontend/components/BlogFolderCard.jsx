@@ -1,10 +1,12 @@
 import React, { useState } from "react";
 import { Heart, MessageCircle, Share2, Clock, Eye } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 
 export default function BlogFolderCard({ blog }) {
   const navigate = useNavigate();
   const [showOptions, setShowOptions] = useState(false);
+
   const handleNativeShare = (e) => {
     e.stopPropagation();
     const shareData = {
@@ -14,9 +16,11 @@ export default function BlogFolderCard({ blog }) {
     };
 
     if (navigator.share) {
-      navigator.share(shareData).catch(console.error);
+      navigator.share(shareData).catch(() => {
+        toast.error("Sharing failed.");
+      });
     } else {
-      alert("Web Share not supported on this device.");
+      toast("Web Share not supported on this device.");
     }
     setShowOptions(false);
   };
@@ -26,15 +30,15 @@ export default function BlogFolderCard({ blog }) {
     const url = `${window.location.origin}/blog/${blog.id}`;
     navigator.clipboard
       .writeText(url)
-      .then(() => alert("Link copied to clipboard!"))
-      .catch(() => alert("Failed to copy link."));
+      .then(() => toast.success("Link copied to clipboard!"))
+      .catch(() => toast.error("Failed to copy link."));
     setShowOptions(false);
   };
 
   return (
     <div
       onClick={() => navigate(`/blog/${blog.id}`)}
-      className="flex flex-col items-stretch cursor-pointer transition-shadow  rounded-lg"
+      className="flex flex-col items-stretch cursor-pointer transition-shadow rounded-lg"
     >
       {/* Folder Container */}
       <div className="folder-bg rounded-lg p-12 flex flex-col justify-between gap-4">
@@ -72,6 +76,8 @@ export default function BlogFolderCard({ blog }) {
             {blog.comments}
           </span>
         </div>
+
+        {/* Share Options */}
         <div className="relative">
           <button
             onClick={(e) => {
@@ -85,23 +91,24 @@ export default function BlogFolderCard({ blog }) {
 
           {showOptions && (
             <div
-  onClick={(e) => e.stopPropagation()}
-  className="absolute right-0 mt-2 flex bg-white border border-gray-200 shadow-md rounded-md z-10 text-white text-sm"
->
-  <button
-    onClick={handleNativeShare}
-    className="px-4 py-2 hover:bg-gray-100 rounded-l-md"
-  >
-    Share
-  </button>
-  <button
-    onClick={handleCopyLink}
-    className="px-4 py-2 hover:bg-gray-100 rounded-r-md border-l"
-  >
-    Copy Link
-  </button>
-</div>
-
+              onClick={(e) => e.stopPropagation()}
+              className="absolute right-0 mt-2 flex bg-black rounded-md z-10 text-white text-sm gap-2 px-2 py-1"
+            >
+              <button
+                onClick={handleNativeShare}
+                className="flex items-center gap-1 px-3 py-2 hover:bg-white hover:text-black rounded-md"
+              >
+                <Share2 className="w-4 h-4" />
+                Share
+              </button>
+              <button
+                onClick={handleCopyLink}
+                className="flex items-center gap-1 px-3 py-2 hover:bg-white hover:text-black rounded-md"
+              >
+                <Share2 className="w-4 h-4" />
+                Copy Link
+              </button>
+            </div>
           )}
         </div>
       </div>
