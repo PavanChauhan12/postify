@@ -98,14 +98,14 @@ export default function BlogFolderCard({ blog }) {
                 onClick={handleNativeShare}
                 className="flex items-center gap-1 px-3 py-2 hover:bg-white hover:text-black rounded-md"
               >
-                <Share2 className="w-fit h-2" />
+                <Share2 className="w-full h-2" />
                 Share
               </button>
               <button
                 onClick={handleCopyLink}
                 className="flex items-center gap-1 px-3 py-2 hover:bg-white hover:text-black rounded-md"
               >
-                <Share2 className="w-fit h-2" />
+                <Share2 className="w-full h-2" />
                 Copy Link
               </button>
             </div>
