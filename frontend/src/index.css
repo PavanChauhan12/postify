@@ -264,7 +264,6 @@ button:focus-visible {
 
 html, body {
   background-color: #f4f1ea !important;  /* your light beige */
-  color: inherit;
   height: 100%;
   margin: 0;
   padding: 0;
