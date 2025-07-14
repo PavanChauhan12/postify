@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useState } from "react";
 import { Heart, MessageCircle, Share2, Clock, Eye } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
@@ -6,30 +6,30 @@ export default function BlogFolderCard({ blog }) {
   const navigate = useNavigate();
   const [showOptions, setShowOptions] = useState(false);
   const handleNativeShare = (e) => {
-  e.stopPropagation();
-  const shareData = {
-    title: blog.title,
-    text: blog.excerpt,
-    url: `${window.location.origin}/blog/${blog.id}`,
+    e.stopPropagation();
+    const shareData = {
+      title: blog.title,
+      text: blog.excerpt,
+      url: `${window.location.origin}/blog/${blog.id}`,
+    };
+
+    if (navigator.share) {
+      navigator.share(shareData).catch(console.error);
+    } else {
+      alert("Web Share not supported on this device.");
+    }
+    setShowOptions(false);
   };
 
-  if (navigator.share) {
-    navigator.share(shareData).catch(console.error);
-  } else {
-    alert("Web Share not supported on this device.");
-  }
-  setShowOptions(false);
-};
-
-const handleCopyLink = (e) => {
-  e.stopPropagation();
-  const url = `${window.location.origin}/blog/${blog.id}`;
-  navigator.clipboard.writeText(url)
-    .then(() => alert("Link copied to clipboard!"))
-    .catch(() => alert("Failed to copy link."));
-  setShowOptions(false);
-};
-
+  const handleCopyLink = (e) => {
+    e.stopPropagation();
+    const url = `${window.location.origin}/blog/${blog.id}`;
+    navigator.clipboard
+      .writeText(url)
+      .then(() => alert("Link copied to clipboard!"))
+      .catch(() => alert("Failed to copy link."));
+    setShowOptions(false);
+  };
 
   return (
     <div
@@ -73,37 +73,37 @@ const handleCopyLink = (e) => {
           </span>
         </div>
         <div className="relative">
-  <button
-    onClick={(e) => {
-      e.stopPropagation();
-      setShowOptions(!showOptions);
-    }}
-    className="hover:text-gray-900 bg-black text-white p-2 rounded-md"
-  >
-    <Share2 className="w-4 h-4" />
-  </button>
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              setShowOptions(!showOptions);
+            }}
+            className="hover:text-gray-900 bg-black text-white p-2 rounded-md"
+          >
+            <Share2 className="w-4 h-4" />
+          </button>
 
-  {showOptions && (
-    <div
-      onClick={(e) => e.stopPropagation()}
-      className="absolute right-0 mt-2 w-32 bg-white border border-gray-200 shadow-md rounded-md z-10 text-black text-sm"
-    >
-      <button
-        onClick={handleNativeShare}
-        className="w-full text-left px-3 py-2 hover:bg-gray-100"
-      >
-        Share
-      </button>
-      <button
-        onClick={handleCopyLink}
-        className="w-full text-left px-3 py-2 hover:bg-gray-100"
-      >
-        Copy Link
-      </button>
-    </div>
-  )}
+          {showOptions && (
+            <div
+  onClick={(e) => e.stopPropagation()}
+  className="absolute right-0 mt-2 flex bg-white border border-gray-200 shadow-md rounded-md z-10 text-white text-sm"
+>
+  <button
+    onClick={handleNativeShare}
+    className="px-4 py-2 hover:bg-gray-100 rounded-l-md"
+  >
+    Share
+  </button>
+  <button
+    onClick={handleCopyLink}
+    className="px-4 py-2 hover:bg-gray-100 rounded-r-md border-l"
+  >
+    Copy Link
+  </button>
 </div>
 
+          )}
+        </div>
       </div>
     </div>
   );
