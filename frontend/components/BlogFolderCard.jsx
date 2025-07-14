@@ -3,6 +3,26 @@ import { useNavigate } from "react-router-dom"
 
 export default function BlogFolderCard({ blog }) {
   const navigate = useNavigate()
+  const handleShare = (e) => {
+  e.stopPropagation();
+
+  const shareData = {
+    title: blog.title,
+    text: blog.excerpt,
+    url: `${window.location.origin}/blog/${blog.id}`,
+  };
+
+  if (navigator.share) {
+    navigator.share(shareData).catch((err) => {
+      console.error("Sharing failed", err);
+    });
+  } else {
+    navigator.clipboard.writeText(shareData.url)
+      .then(() => alert("Link copied to clipboard!"))
+      .catch(() => alert("Failed to copy link."));
+  }
+};
+
 
   return (
     <div
@@ -48,14 +68,12 @@ export default function BlogFolderCard({ blog }) {
           </span>
         </div>
         <button
-          onClick={(e) => {
-            e.stopPropagation()
-            // Share logic here
-          }}
-          className="hover:text-gray-900 bg-black text-white p-2 rounded-md"
-        >
-          <Share2 className="w-4 h-4" />
-        </button>
+  onClick={handleShare}
+  className="hover:text-gray-900 bg-black text-white p-2 rounded-md"
+>
+  <Share2 className="w-4 h-4" />
+</button>
+
       </div>
     </div>
   )
