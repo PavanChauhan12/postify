@@ -113,7 +113,7 @@ export default function CreateBlog() {
 
       <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="flex items-center justify-between mb-10">
-          <Button onClick={() => navigate("/dashboard")} className="border-gray-300 bg-pink-200 text-black">
+          <Button onClick={() => navigate("/dashboard")} className="border-gray-300 bg-pink-200 text-white">
             <ArrowLeft className="w-4 h-4 mr-2" />
             Back to Dashboard
           </Button>

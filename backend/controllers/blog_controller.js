@@ -232,7 +232,33 @@ const blogController = {
     res.status(500).json({ message: "Server error", error: err.message });
   }
 },
+deleteBlog: async (req, res) => {
+    try {
+      const blogId = req.params.id;
+      if (!isValidObjectId(blogId)) {
+        return res.status(400).json({ message: 'Invalid blog ID format' });
+      }
 
+      const blog = await Blog.findById(blogId);
+      if (!blog) return res.status(404).json({ message: 'Blog not found' });
+
+      // Ensure the user is the author of the blog
+      if (String(blog.author) !== String(req.user._id)) {
+        return res.status(403).json({ message: 'Unauthorized: You are not the author of this blog.' });
+      }
+
+      // Remove blog from user's blog list
+      await User.findByIdAndUpdate(req.user._id, { $pull: { blogs: blog._id } });
+
+      // Delete the blog
+      await Blog.deleteOne({ _id: blogId });
+
+      res.status(200).json({ message: 'Blog deleted successfully.' });
+    } catch (err) {
+      console.error('Error deleting blog:', err);
+      res.status(500).json({ message: 'Server error', error: err.message });
+    }
+  },
 
 };
 

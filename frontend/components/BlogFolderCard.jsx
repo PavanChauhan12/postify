@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { Heart, MessageCircle, Share2, Clock, Eye } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
@@ -6,6 +6,8 @@ import toast from "react-hot-toast";
 export default function BlogFolderCard({ blog }) {
   const navigate = useNavigate();
   const [showOptions, setShowOptions] = useState(false);
+  const [openDirection, setOpenDirection] = useState("down");
+  const buttonRef = useRef(null);
 
   const handleNativeShare = (e) => {
     e.stopPropagation();
@@ -16,9 +18,9 @@ export default function BlogFolderCard({ blog }) {
     };
 
     if (navigator.share) {
-      navigator.share(shareData).catch(() => {
-        toast.error("Sharing failed.");
-      });
+      navigator
+        .share(shareData)
+        .catch(() => toast.error("Sharing failed."));
     } else {
       toast("Web Share not supported on this device.");
     }
@@ -33,6 +35,16 @@ export default function BlogFolderCard({ blog }) {
       .then(() => toast.success("Link copied to clipboard!"))
       .catch(() => toast.error("Failed to copy link."));
     setShowOptions(false);
+  };
+
+  const handleShareClick = (e) => {
+    e.stopPropagation();
+    const buttonRect = buttonRef.current.getBoundingClientRect();
+    const spaceBelow = window.innerHeight - buttonRect.bottom;
+
+    // Open upward if less than 120px space below
+    setOpenDirection(spaceBelow < 120 ? "up" : "down");
+    setShowOptions((prev) => !prev);
   };
 
   return (
@@ -80,10 +92,8 @@ export default function BlogFolderCard({ blog }) {
         {/* Share Options */}
         <div className="relative">
           <button
-            onClick={(e) => {
-              e.stopPropagation();
-              setShowOptions(!showOptions);
-            }}
+            ref={buttonRef}
+            onClick={handleShareClick}
             className="hover:text-gray-900 bg-black text-white p-2 rounded-md"
           >
             <Share2 className="w-4 h-4" />
@@ -92,20 +102,25 @@ export default function BlogFolderCard({ blog }) {
           {showOptions && (
             <div
               onClick={(e) => e.stopPropagation()}
-              className="absolute right-0 mt-2 flex bg-black rounded-md z-10 text-white text-sm gap-2 px-2 py-1"
+              className={`absolute right-0 ${
+                openDirection === "up"
+                  ? "bottom-full mb-2"
+                  : "top-full mt-2"
+              } flex bg-black/60 rounded-md z-40 text-white text-sm gap-2 px-2 py-1`}
             >
               <button
                 onClick={handleNativeShare}
-                className="flex items-center gap-1 px-3 py-2 hover:bg-white hover:text-black rounded-md"
+                className="flex items-center justify-center gap-2 min-w-[100px] px-3 py-1.5 text-sm hover:bg-white hover:text-black rounded-md whitespace-nowrap"
               >
-                <Share2 className="w-full h-2" />
+                <Share2 className="w-4 h-4" />
                 Share
               </button>
+
               <button
                 onClick={handleCopyLink}
-                className="flex items-center gap-1 px-3 py-2 hover:bg-white hover:text-black rounded-md"
+                className="flex items-center justify-center gap-2 min-w-[100px] px-3 py-1.5 text-sm hover:bg-white hover:text-black rounded-md whitespace-nowrap"
               >
-                <Share2 className="w-full h-2" />
+                <Share2 className="w-4 h-4" />
                 Copy Link
               </button>
             </div>

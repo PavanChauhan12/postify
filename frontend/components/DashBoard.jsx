@@ -31,6 +31,7 @@ import {
   CartesianGrid,
   ResponsiveContainer,
 } from "recharts";
+import toast from "react-hot-toast";
 
 export default function Dashboard() {
   const navigate = useNavigate();
@@ -67,6 +68,39 @@ export default function Dashboard() {
 
     fetchUserProfileAndBlogs();
   }, [navigate]);
+  const handleDeleteBlog = (blogId) => {
+    toast.custom((t) => (
+      <div className="bg-white p-4 rounded-md shadow-md border w-[580px] mx-auto text-white items-center justify-center">
+        <p className="text-lg text-gray-800 mb-3">
+          Are you sure you want to delete this blog?
+        </p>
+        <div className="flex justify-end gap-2">
+          <Button size="sm" onClick={() => toast.dismiss(t.id)}>
+            Cancel
+          </Button>
+          <Button
+            size="sm"
+            
+            onClick={async () => {
+              toast.dismiss(t.id);
+              const loadingId = toast.loading("Deleting blog...");
+              try {
+                await api.deleteBlog(blogId);
+                setUserBlogs((prev) => prev.filter((b) => b._id !== blogId));
+                toast.success("Blog deleted successfully!", { id: loadingId });
+              } catch (err) {
+                toast.error(err.message || "Failed to delete blog", {
+                  id: loadingId,
+                });
+              }
+            }}
+          >
+            Delete
+          </Button>
+        </div>
+      </div>
+    ), { duration: Infinity });
+  };
 
   const aggregateWeeklyViews = (blogs) => {
     const viewMap = {};
@@ -282,18 +316,33 @@ export default function Dashboard() {
                         publishedAt: blog.publishedAt,
                       }}
                     />
-                    {blog.status === "draft" && (
+
+                    {/* Action Buttons */}
+                    <div className="absolute top-2 right-2 z-10 space-x-2 flex">
+                      {blog.status === "draft" && (
+                        <Button
+                          size="sm"
+                         
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            navigate(`/edit/${blog._id}`, { state: { blog } });
+                          }}
+                        >
+                          <PenTool className="w-4 h-4 mr-1" /> Edit
+                        </Button>
+                      )}
+
                       <Button
                         size="sm"
-                        className="absolute top-2 right-2 z-10"
+                        
                         onClick={(e) => {
                           e.stopPropagation();
-                          navigate(`/edit/${blog._id}`, { state: { blog } });
+                          handleDeleteBlog(blog._id);
                         }}
                       >
-                        <PenTool className="w-4 h-4 mr-1" /> Edit
+                        Delete
                       </Button>
-                    )}
+                    </div>
                   </div>
                 ))
               ) : (
