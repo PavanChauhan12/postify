@@ -39,7 +39,7 @@ export default function Footer() {
     <div className="flex flex-col">
       <span className="text-gray-500 font-medium">Phone</span>
       <a href="tel:+11234567890" className="hover:text-black transition-colors">
-        +1 (123) 456-7890
+        +91 6892734671
       </a>
     </div>
 
@@ -48,7 +48,7 @@ export default function Footer() {
       <span className="text-gray-500 font-medium">Address</span>
       <address className="not-italic">
         123 Blog Street, Suite 456<br />
-        Blogger City, BC 78901
+        Blogger City, Banglore
       </address>
     </div>
   </div>
