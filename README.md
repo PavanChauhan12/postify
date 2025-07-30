@@ -1,6 +1,6 @@
-# 📬 Postify – A Minimalist MERN Social App
+# 📬 Postify – A Minimalist Social App
 
-**Postify** is a full-stack social wall app built using the **MERN stack** (MongoDB, Express, React, Node). It allows users to post, view, edit, and delete content in real-time with a beautiful minimalist UI — all without authentication.
+**Postify** is a full-stack social wall app built using the **MERN stack** (MongoDB, Express, React, Node). It allows users to post, view, edit, and delete content in real-time with a beautiful minimalist UI along side liking and commenting for better interaction.
 
 🔗 **Live Demo**: [postify-delta.vercel.app](https://postify-delta.vercel.app/)
 
@@ -11,7 +11,7 @@
 ### 🖥️ Frontend
 - ⚡ Built with React (Vite or CRA)
 - 📝 Create, edit, delete posts
-- 🌙 Dark theme UI
+- 🌙 Light theme UI
 - 📱 Responsive and mobile-friendly
 - 🧠 State management with React hooks
 - 💾 Posts stored persistently via backend (MongoDB)
