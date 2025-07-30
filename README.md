@@ -26,7 +26,7 @@
 ---
 
 ## 🖼️ Preview
-> ![App Demo](assets/demo1.png)
+> ![App Demo](assets/demo1.jpeg)
 > ![App Demo](assets/demo2.png)
 
 ---
